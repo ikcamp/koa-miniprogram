@@ -5,7 +5,12 @@ const SERVER_API = {
     PHOTO: '/photo'
 }
 const HTTP = (url, option = {}, fn = 'request') => {
-    let sessionKey = wx.getStorageSync('sessionKey')
+    let sessionKey = ''
+    try{
+        sessionKey = wx.getStorageSync('sessionKey')
+    }catch(e){
+        console.log(`[request请求获取登录态失败]，${JSON.stringify(e)}`)
+    }
     url = HOST + url
     const opt = Object.assign({
         url,
@@ -43,10 +48,9 @@ module.exports = {
         })
     },
     wxLogin() {
-        const tthis = this
         return new Promise((resolve, reject) => {
             wx.login().then((res) => {
-                tthis.login(res.code).then(response => {
+                this.login(res.code).then(response => {
                     const {
                         data
                     } = response.data

@@ -15,8 +15,7 @@ Component({
       })
     },
     create(e) {
-      const tthis = this
-      const name = (tthis.data.picName || "").trim()
+      const name = (this.data.picName || "").trim()
       if (name == '') return
       this.triggerEvent('addPics', {name})
     },
