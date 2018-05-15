@@ -23,13 +23,11 @@ Page({
     this.getPic()
   },
   getPic() {
-    const tthis = this
     SERVER.getPic(this.data.id).then(res => {
-      console.log("get pic suc", res)
       if (res.data.status == 0) {
         const _data = res.data.data
-        let pics = _data.length === 0 ? [] : tthis.reSort( _data )
-        tthis.setData({
+        let pics = _data.length === 0 ? [] : this.reSort( _data )
+        this.setData({
           pics,
           nums: _data.length 
         })
@@ -58,7 +56,6 @@ Page({
     return result
   },
   upload(evt) {
-    const tthis = this
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -69,12 +66,12 @@ Page({
         filePath: tempFilePaths[0],
         name: 'file',
         formData: {
-          id: tthis.data.id
+          id: this.data.id
         }
       }).then(res => {
         let data = res.data
         console.log(res)
-        tthis.getPic()
+        this.getPic()
       })
     })
   },

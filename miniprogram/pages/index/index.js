@@ -10,11 +10,10 @@ Page({
     this.getPics()
   },
   getPics() {
-    const tthis = this
     SERVER.getPics().then(res => {
       const _data = res.data
       if (_data.status == 0) {
-        tthis.setData({
+        this.setData({
           pics: _data.data || []
         })
       }
@@ -28,7 +27,6 @@ Page({
     })
   },
   onAddPics(e) {
-    const tthis = this
     const {
       name
     } = e.detail
@@ -37,11 +35,11 @@ Page({
     })
     SERVER.addPics(name).then(res => {
       if (res.data.status == 0) {
-        tthis.getPics()
+        this.getPics()
       }
     }).finally(() => {
       wx.hideLoading()
-      tthis.setData({
+      this.setData({
         hidden: true
       })
     })
