@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/pic/pic"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#11b8f5",
+    "navigationBarTitleText": "云相册",
+    "navigationBarTextStyle": "#fff"
+  }
+}
