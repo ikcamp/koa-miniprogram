@@ -1,20 +1,23 @@
 import SERVER from "../../server/index"
-Page({
+import connect from "../../utils/connect"
+const mapStateToProps = (state) => {
+  return {
+    pics: state.pics
+  }
+}
+Page(connect(mapStateToProps)({
   data: {
     hidden: true,
     Host: SERVER.HOST,
-    fm: SERVER.FM,
-    pics: []
-  },
-  onShow(){
-    this.getPics()
+    fm: SERVER.FM
   },
   getPics() {
     SERVER.getPics().then(res => {
       const _data = res.data
       if (_data.status == 0) {
-        this.setData({
-          pics: _data.data || []
+        this.__dispatch({
+          type: "MODIFY_PICS",
+          datas: _data.data || []
         })
       }
     }).catch(e => {
@@ -59,4 +62,4 @@ Page({
       url: `../pic/pic?id=${id}&name=${name}`
     })
   }
-})
+}))

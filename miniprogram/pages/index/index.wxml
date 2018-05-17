@@ -6,7 +6,7 @@
           <view>新建相册</view>
         </view>
     </view>  
-    <view class="box-item" bindtap="toDetail" wx:for="{{pics}}" wx:key="{{item._doc._id}}" data-id="{{item._doc._id}}" data-name="{{item._doc.name}}">
+    <view class="box-item" bindtap="toDetail" wx:for="{{pics.datas}}" wx:key="{{item._doc._id}}" data-id="{{item._doc._id}}" data-name="{{item._doc.name}}">
         <image class="item-img" mode="aspectFill" src="{{item._doc.fm?(Host+'/'+item._doc.fm):fm}}"></image>
         <view class="item-name">{{item._doc.name}}</view>
         <view class="item-num">{{item.photoCount}}张</view>

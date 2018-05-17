@@ -1,5 +1,7 @@
 import SERVER from "../../server/index"
 import {formatTime} from "../../utils/formatTime"
+const {Store} = getApp()
+const dispatch = Store.dispatch
 Page({
   data: {
     id: '',
@@ -70,9 +72,22 @@ Page({
         }
       }).then(res => {
         let data = res.data
-        console.log(res)
         this.getPic()
+        this.updatePics()
       })
+    })
+  },
+  updatePics(){
+    SERVER.getPics().then(res => {
+      const _data = res.data
+      if (_data.status == 0) {
+        dispatch({
+          type: "MODIFY_PICS",
+          datas: _data.data || []
+        })
+      }
+    }).catch(e => {
+      console.error("http error", e)
     })
   },
   previewImage(e) {
