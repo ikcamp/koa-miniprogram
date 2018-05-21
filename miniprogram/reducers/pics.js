@@ -1,4 +1,3 @@
-import SERVER from "../server/index"
 const INITIAL_STATE = {
   datas: []
 }
