@@ -24,6 +24,6 @@ module.exports = {
   async getAlbums (openId) {
     return Album.find({
       openId
-    })
+    }).sort({'updated': -1})
   }
 }

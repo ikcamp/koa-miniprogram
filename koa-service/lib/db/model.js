@@ -35,6 +35,9 @@ const albumSchema = new mongoose.Schema({
   fm: {
     type: String
   }
+},{
+  versionKey: false,
+  timestamps: { createdAt: 'created', updatedAt: 'updated' }
 })
 
 const photoSchema = new mongoose.Schema({
