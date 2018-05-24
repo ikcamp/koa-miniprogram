@@ -34,6 +34,11 @@ Page({
           nums: _data.length 
         })
       }
+    }).catch(e=>{
+      wx.showModal({
+        title: '提示',
+        content: '获取照片信息失败'
+      })
     })
   },
   reSort(d = []) {
@@ -74,6 +79,11 @@ Page({
         let data = res.data
         this.getPic()
         this.updatePics()
+      }).catch(e=>{
+        wx.showModal({
+          title: '提示',
+          content: '上传照片失败'
+        })
       })
     })
   },
@@ -87,7 +97,10 @@ Page({
         })
       }
     }).catch(e => {
-      console.error("http error", e)
+      wx.showModal({
+        title: '提示',
+        content: '更新相册信息失败'
+      })
     })
   },
   previewImage(e) {

@@ -21,7 +21,10 @@ Page(connect(mapStateToProps)({
         })
       }
     }).catch(e => {
-      console.error("http error", e)
+      wx.showModal({
+        title: '提示',
+        content: '获取相册信息失败'
+      })
     })
   },
   create() {
@@ -40,6 +43,11 @@ Page(connect(mapStateToProps)({
       if (res.data.status == 0) {
         this.getPics()
       }
+    }).catch(e=>{
+      wx.showModal({
+        title: '提示',
+        content: '创建相册失败'
+      })
     }).finally(() => {
       wx.hideLoading()
       this.setData({
