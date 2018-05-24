@@ -7,7 +7,6 @@ App({
     wx.checkSession().then(()=>{
       if(!wx.getStorageSync('sessionKey')){
         SERVER.wxLogin().then(res=>{
-          console.log("new session", res)
           this.getPics()
         })
       }else{
@@ -15,7 +14,6 @@ App({
       }
     }).catch(e=>{
       SERVER.wxLogin().then(res=>{
-        console.log("new session", res)
         this.getPics()
       })
     })
@@ -30,7 +28,10 @@ App({
         })
       }
     }).catch(e => {
-      console.error("http error", e)
+      wx.showModal({
+        title: '提示',
+        content: '获取相册信息失败'
+      })
     })
   }
 })

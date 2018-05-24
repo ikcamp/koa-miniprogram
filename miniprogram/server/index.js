@@ -1,4 +1,4 @@
-const HOST = 'http://localhost:4001'
+const HOST = 'https://www.ikcamp.com'
 const SERVER_API = {
     ALBUM: '/album',
     LOGIN: '/login',
