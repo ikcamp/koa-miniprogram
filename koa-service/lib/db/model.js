@@ -17,8 +17,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     index: true
   },
-  isAdmin: {
-    type: Boolean
+  userType: {
+    type: int
   },
   sessionKey: {
     type: String
@@ -55,6 +55,10 @@ const photoSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now
+  },
+  isDelete: {
+    type: boolean,
+    default: false
   }
 })
 

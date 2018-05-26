@@ -1,5 +1,5 @@
 const {
-  login, updateName
+  login, updateName, updateUserType, getUsers
 } = require('../lib/db/user')
 const {
   getSession
@@ -19,5 +19,11 @@ module.exports = {
   },
   async updateUserName (sessionKey, name) {
     return updateName(name, sessionKey)
+  },
+  async setUserType(id, userType){
+    return updateUserType(id, userType)
+  },
+  async getUsers(pageIndex, pageSize){
+    return getUsers(pageIndex, pageSize)
   }
 }
