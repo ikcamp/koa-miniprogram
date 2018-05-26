@@ -9,7 +9,7 @@ module.exports = async function (context, next) {
   const user = await findBySessionKey(sessionKey)
   if (user) {
     context.state.openId = user.openId
-    context.state.isAdmin = user.isAdmin
+    context.state.isAdmin = user.userType === 1
   } else {
     throw new Error('sessionKey 无效')
   }

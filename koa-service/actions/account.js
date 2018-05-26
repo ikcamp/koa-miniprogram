@@ -12,7 +12,7 @@ module.exports = {
         openid,
         session_key
       } = session
-      return login(openid, session_key)
+      return login(openid)
     } else {
       throw new Error('登陆失败')
     }

@@ -1,6 +1,10 @@
 const {
   User
 } = require('./model')
+const {
+  encode,
+  decode
+} = require('../crypto')
 
 const getByOpenId = async (openId) => {
   const users = await User.find({
@@ -13,29 +17,36 @@ const getByOpenId = async (openId) => {
 }
 
 module.exports = {
-  async login(openId, sessionKey) {
-    const user = await getByOpenId(openId)
-    if (user) {
-      await User.update({
-        openId: openId
-      }, {
-        sessionKey: sessionKey,
-        lastLogin: Date.now()
-      })
-    } else {
-      await User.create({
+  async login(openId) {
+    let user = await getByOpenId(openId)
+    if (!user) {
+      user = await User.create({
         openId: openId,
-        sessionKey: sessionKey,
         lastLogin: Date.now()
       })
     }
+    const id = user._id
+    const sessionKey = encode(id)
+    await User.update({
+      _id: id
+    }, {
+      sessionKey: sessionKey
+    })
     return {
       sessionKey
     }
   },
   async findBySessionKey(sessionKey) {
+    const {
+      id,
+      timespan
+    } = decode(sessionKey)
+    // sessionKey expire 3d
+    if (Date.now() - timespan > 1000 * 60 * 60 * 24 * 3) {
+      return null
+    }
     const users = await User.find({
-      sessionKey: sessionKey
+      _id: id
     })
     if (users.length) {
       return users[0]
