@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- 引入boostrap相关静态文件 -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <!-- 主要样式文件 -->
+    <link rel="stylesheet" href='../css/main.css'>
+
+    {% block head %} 
+    {% endblock %}
+</head>
+
+<body>
+    {% include './header.html' %} 
+
+    {% block body %}
+        <div class="container-fluid">
+            <div class="row">
+                  <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                    <div class="sidebar-sticky">
+                      <ul class="nav flex-column" id="sidebar_list">
+                          {% for item in menu %}
+                          <li class="nav-item j-nav-item">
+                                <a class="nav-link {{'active' if activeMenu === loop.index0 else ''}}" href='{{item.url}}'>
+                                    <span data-feather={{item.icon}}></span>
+                                    {{item.title}}
+                                </a>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                    </div>
+                  </nav>
+            </div>
+        </div>
+    {% endblock %}
+    
+    {% include './footer.html' %} 
+
+    <!-- 引入boostrap相关静态文件 -->
+    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- 引入图标库 -->
+    <script src="../js/feather.min.js"></script>
+    <!-- 替换模版中的DOM为对应SVG图标 -->
+    <script>
+        feather.replace();
+    </script>
+
+    <script src="../js/util.js"></script>
+
+    {% block extra %}
+    <script>
+	// 页面JavaScript代码
+    </script> 
+    {% endblock %}
+</body>
+</html>
