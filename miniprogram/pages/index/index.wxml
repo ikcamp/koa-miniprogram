@@ -1,0 +1,16 @@
+<view class="container">
+  <view class="p-i-box">
+    <view class="box-item">
+        <view class="item-img item-add" bindtap="create">
+          <view class="item-ico">﹢</view>
+          <view>新建相册</view>
+        </view>
+    </view>  
+    <view class="box-item" bindtap="toDetail" wx:for="{{pics.datas}}" wx:key="{{item._doc._id}}" data-id="{{item._doc._id}}" data-name="{{item._doc.name}}">
+        <image class="item-img" mode="aspectFill" src="{{item._doc.fm?(Host+'/'+item._doc.fm):fm}}"></image>
+        <view class="item-name">{{item._doc.name}}</view>
+        <view class="item-num">{{item.photoCount}}张</view>
+    </view>
+  </view>
+  <component-create hidden="{{hidden}}" bind:addPics="onAddPics" bind:goBack="onGoBack"></component-create>
+</view>
