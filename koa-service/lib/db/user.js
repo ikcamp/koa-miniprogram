@@ -21,8 +21,7 @@ module.exports = {
     let user = await getByOpenId(openId)
     if (!user) {
       user = await User.create({
-        openId: openId,
-        lastLogin: Date.now()
+        openId: openId
       })
     }
     const id = user._id
@@ -30,7 +29,7 @@ module.exports = {
     await User.update({
       _id: id
     }, {
-      sessionKey: sessionKey
+      lastLogin: Date.now()
     })
     return {
       sessionKey

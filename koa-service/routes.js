@@ -19,8 +19,46 @@ router.get('/updateUserName', async (context, next) => {
   const {
     name
   } = context.query
-  const sessionKey = context.get('x-session')
+  const sessionKey = context.get('x-session') || context.cookies.get('session_id')
   await account.updateUserName(sessionKey, name)
+})
+
+router.get('/login/ercode', async (context, next) => {
+  context.body = {
+    status: 0,
+    data: await account.getErCode()
+  }
+})
+
+router.put('/login/ercode/:code', async (context, next) => {
+  const code = context.params.code
+  const sessionKey = context.body.sessionKey
+  await account.setSessionKeyForCode(code, sessionKey)
+})
+
+router.get('/login/errcode/check/:code', async (context, next) => {
+  const startTime = Date.now()
+  async function login() {
+    const code = context.params.code
+    const sessionKey = await account.getSessionKeyByCode(code)
+    if (sessionKey) {
+      context.cookies.set('session_id', sessionKey, {
+        httpOnly: true
+      })
+      context.body = {
+        status: 0
+      }
+    } else {
+      if (Date.now() - startTime < 10000) {
+        process.nextTick(login)
+      } else {
+        context.body = {
+          status: -1
+        }
+      }
+    }
+  }
+  await login()
 })
 
 router.get('/album', auth, async (context, next) => {
@@ -114,7 +152,7 @@ router.get('/admin/user', async (context, next) => {
   }
 })
 
-router.get('/admin/user/:id/userType/:type', async (context, next)=>{
+router.get('/admin/user/:id/userType/:type', async (context, next) => {
   const body = {
     status: 0,
     data: await account.setUserType(context.params.id, context.params.type)

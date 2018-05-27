@@ -19,9 +19,6 @@ const userSchema = new mongoose.Schema({
   },
   userType: {
     type: int
-  },
-  sessionKey: {
-    type: String
   }
 })
 
@@ -62,8 +59,17 @@ const photoSchema = new mongoose.Schema({
   }
 })
 
+const codeSchema = new mongoose.Schema({
+  code: {
+    type: String
+  },
+  sessionKey: String
+})
+
 module.exports = {
   User: mongoose.model('User', userSchema),
   Phopto: mongoose.model('photo', photoSchema),
-  Album: mongoose.model('album', albumSchema)
+  Album: mongoose.model('album', albumSchema),
+  Code: mongoose.model('code', codeSchema)
 }
+

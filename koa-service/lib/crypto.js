@@ -15,8 +15,11 @@ module.exports = {
     decoded += decoder.final('utf8')
     const arr = decoded.split('|')
     return {
-      id:  parseInt(arr[0]),
-      timespan: parseInt( arr[1])
+      id: parseInt(arr[0]),
+      timespan: parseInt(arr[1])
     }
+  },
+  encodeErCode() {
+    return this.encode(Math.random())
   }
 }
