@@ -1,11 +1,11 @@
 const photo = require('../lib/db/photo')
 const album = require('../lib/db/album')
 module.exports = {
-  async getPhotos (openId, albumId) {
-    return photo.getPhotos(openId, albumId)
+  async getPhotos (openId, albumId, pageIndex, pageSize) {
+    return photo.getPhotos(openId, albumId, pageIndex, pageSize)
   },
-  async getApprovingPhotos () {
-    return photo.getApprovingPhotos()
+  async getApprovingPhotos (pageIndex, pageSize) {
+    return photo.getApprovingPhotos(pageIndex, pageSize)
   },
   async approve (id) {
     return photo.approve()
@@ -19,8 +19,8 @@ module.exports = {
   async getPhotoById (id) {
     return photo.getPhotoById(id)
   },
-  async getAlbums (openId) {
-    const albums = await album.getAlbums(openId)
+  async getAlbums (openId, pageIndex, pageSize) {
+    const albums = await album.getAlbums(openId, pageIndex, pageSize)
     return Promise.all(albums.map(item => {
       const id = item._id
       return photo.getPhotosByAlbumId(id).then(ps => {
