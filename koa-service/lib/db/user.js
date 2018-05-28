@@ -1,6 +1,10 @@
 const {
   User
 } = require('./model')
+const {
+  encode,
+  decode
+} = require('../crypto')
 
 const getByOpenId = async (openId) => {
   const users = await User.find({
@@ -13,40 +17,69 @@ const getByOpenId = async (openId) => {
 }
 
 module.exports = {
-  async login (openId, sessionKey) {
-    const user = await getByOpenId(openId)
-    if (user) {
-      await User.update({
+  async login(openId) {
+    let user = await getByOpenId(openId)
+    if (!user) {
+      user = await User.create({
         openId: openId
-      }, {
-        sessionKey: sessionKey,
-        lastLogin: Date.now()
-      })
-    } else {
-      await User.create({
-        openId: openId,
-        sessionKey: sessionKey,
-        lastLogin: Date.now()
       })
     }
+    const id = user._id
+    const sessionKey = encode(id)
+    await User.update({
+      _id: id
+    }, {
+      lastLogin: Date.now()
+    })
     return {
       sessionKey
     }
   },
-  async findBySessionKey (sessionKey) {
+  async findBySessionKey(sessionKey) {
+    const {
+      id,
+      timespan
+    } = decode(sessionKey)
+    // sessionKey expire 3d
+    if (Date.now() - timespan > 1000 * 60 * 60 * 24 * 3) {
+      return null
+    }
     const users = await User.find({
-      sessionKey: sessionKey
+      _id: id
     })
     if (users.length) {
       return users[0]
     }
     return null
   },
-  async updateName (name, sessionKey) {
+  async updateName(name, sessionKey) {
     return User.update({
       sessionKey: sessionKey
     }, {
       name: name
     })
+  },
+  async updateUserType(id, type) {
+    return User.update({
+      _id: id
+    }, {
+      userType: userType
+    })
+  },
+  async getAdmins() {
+    return User.find({
+      userType: 1
+    })
+  },
+  async isAdmin(id) {
+    const user = await User.findById(id)
+    return user.userType === 1
+  },
+  async isLocked(id) {
+    const user = await User.findById(id)
+    return user.userType === -1
+  },
+  async getUsers(pageIndex, pageSize) {
+    return User.find().skip((pageIndex - 1) * pageSize).limit(pageSize)
   }
 }

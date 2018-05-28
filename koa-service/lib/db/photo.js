@@ -1,9 +1,10 @@
 const {
-  Phopto, Album
+  Phopto,
+  Album
 } = require('./model')
 
 module.exports = {
-  async add (openId, url, albumId) {
+  async add(openId, url, albumId) {
     try {
       await Album.update({
         _id: albumId
@@ -19,38 +20,45 @@ module.exports = {
       albumId
     })
   },
-  async approve (id) {
+  async approve(id) {
     return Phopto.update({
       _id: id
     }, {
       isApproved: true
     })
   },
-  async delete (id) {
-    return Phopto.deleteOne({
+  async delete(id) {
+    return Phopto.update({
       _id: id
+    }, {
+      isDelete: true
     })
   },
-  async getPhotos (openId, albumId) {
+  async getPhotos(openId, albumId, pageIndex, pageSize) {
     let result = await Phopto.find({
       openId,
       albumId,
-      isApproved: true
-    }).sort({'created': -1})
+      isApproved: true,
+      isDelete: false
+    }).sort({
+      'created': -1
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
     return result
   },
-  async getPhotosByAlbumId (albumId) {
+  async getPhotosByAlbumId(albumId, pageIndex, pageSize) {
     return Phopto.find({
       albumId,
-      isApproved: true
-    })
+      isApproved: true,
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
   },
-  async getApprovingPhotos () {
+  async getApprovingPhotos(pageIndex, pageSize) {
     return Phopto.find({
-      isApproved: false
-    })
+      isApproved: false,
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
   },
-  async getPhotoById (id) {
+  async getPhotoById(id) {
     return Phopto.findById(id)
   }
 }
