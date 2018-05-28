@@ -17,11 +17,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     index: true
   },
-  isAdmin: {
-    type: Boolean
-  },
-  sessionKey: {
-    type: String
+  userType: {
+    type: int
   }
 })
 
@@ -58,11 +55,24 @@ const photoSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now
+  },
+  isDelete: {
+    type: boolean,
+    default: false
   }
+})
+
+const codeSchema = new mongoose.Schema({
+  code: {
+    type: String
+  },
+  sessionKey: String
 })
 
 module.exports = {
   User: mongoose.model('User', userSchema),
   Phopto: mongoose.model('photo', photoSchema),
-  Album: mongoose.model('album', albumSchema)
+  Album: mongoose.model('album', albumSchema),
+  Code: mongoose.model('code', codeSchema)
 }
+

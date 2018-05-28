@@ -19,12 +19,50 @@ router.get('/updateUserName', async (context, next) => {
   const {
     name
   } = context.query
-  const sessionKey = context.get('x-session')
+  const sessionKey = context.get('x-session') || context.cookies.get('session_id')
   await account.updateUserName(sessionKey, name)
 })
 
+router.get('/login/ercode', async (context, next) => {
+  context.body = {
+    status: 0,
+    data: await account.getErCode()
+  }
+})
+
+router.put('/login/ercode/:code', async (context, next) => {
+  const code = context.params.code
+  const sessionKey = context.body.sessionKey
+  await account.setSessionKeyForCode(code, sessionKey)
+})
+
+router.get('/login/errcode/check/:code', async (context, next) => {
+  const startTime = Date.now()
+  async function login() {
+    const code = context.params.code
+    const sessionKey = await account.getSessionKeyByCode(code)
+    if (sessionKey) {
+      context.cookies.set('session_id', sessionKey, {
+        httpOnly: true
+      })
+      context.body = {
+        status: 0
+      }
+    } else {
+      if (Date.now() - startTime < 10000) {
+        process.nextTick(login)
+      } else {
+        context.body = {
+          status: -1
+        }
+      }
+    }
+  }
+  await login()
+})
+
 router.get('/album', auth, async (context, next) => {
-  const albums = await photo.getAlbums(context.state.openId)
+  const albums = await photo.getAlbums(context.state.openId, context.query.pageIndex || 1, context.query.pageSize || 10)
   context.body = {
     data: albums,
     status: 0
@@ -32,7 +70,7 @@ router.get('/album', auth, async (context, next) => {
 })
 
 router.get('/album/:id', auth, async (context, next) => {
-  const photos = await photo.getPhotos(context.state.openId, context.params.id)
+  const photos = await photo.getPhotos(context.state.openId, context.params.id, context.query.pageIndex || 1, context.query.pageSize || 10)
   context.body = {
     status: 0,
     data: photos
@@ -40,7 +78,9 @@ router.get('/album/:id', auth, async (context, next) => {
 })
 
 router.post('/album', auth, async (context, next) => {
-  const {name} = context.request.body
+  const {
+    name
+  } = context.request.body
   await photo.addAlbum(context.state.openId, name)
 })
 
@@ -54,7 +94,7 @@ router.del('/album/:id', auth, async (context, next) => {
 
 const storage = multer.diskStorage({
   destination: path.join(__dirname, 'uploads'),
-  filename (req, file, cb) {
+  filename(req, file, cb) {
     const ext = path.extname(file.originalname)
     cb(null, uuid.v4() + ext)
   }
@@ -65,8 +105,12 @@ const uplader = multer({
 })
 
 router.post('/photo', auth, uplader.single('file'), async (context, next) => {
-  const {file} = context.req
-  const {id} = context.req.body
+  const {
+    file
+  } = context.req
+  const {
+    id
+  } = context.req.body
   await photo.add(context.state.openId, file.filename, id)
 })
 
@@ -81,9 +125,9 @@ router.delete('/photo/:id', auth, async (context, next) => {
   }
 })
 
-router.get('/photo/aprove', auth, async (context, next) => {
+router.get('/admin/photo/aprove', auth, async (context, next) => {
   if (context.state.isAdmin) {
-    const photos = await photo.getApprovingPhotos()
+    const photos = await photo.getApprovingPhotos(context.query.pageIndex || 1, context.query.pageSize || 10)
     context.body = {
       status: 0,
       data: photos
@@ -93,11 +137,25 @@ router.get('/photo/aprove', auth, async (context, next) => {
   }
 })
 
-router.put('/photo/approve/:id', auth, async (context, next) => {
+router.put('/admin/photo/approve/:id', auth, async (context, next) => {
   if (context.state.isAdmin) {
     await photo.approve(context.params.id)
   } else {
     context.throw(403, '该用户无权限')
+  }
+})
+
+router.get('/admin/user', async (context, next) => {
+  context.body = {
+    status: 0,
+    data: await account.getUsers(context.query.pageIndex || 1, context.query.pageSize || 10)
+  }
+})
+
+router.get('/admin/user/:id/userType/:type', async (context, next) => {
+  const body = {
+    status: 0,
+    data: await account.setUserType(context.params.id, context.params.type)
   }
 })
 
