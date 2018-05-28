@@ -1,4 +1,4 @@
-const HOST = 'https://www.ikcamp.com'
+const HOST = 'https://api.ikcamp.cn'
 const SERVER_API = {
     ALBUM: '/album',
     LOGIN: '/login',
