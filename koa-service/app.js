@@ -6,7 +6,13 @@ const app = new Koa()
 const JSON_MIME = 'application/json'
 const {open} = require('./lib/db/connect')
 const router = require('./routes')
+const cors = require('@koa/cors')
 open()
+
+app.use(cors({
+  origin: '*'
+}))
+
 app.use(bodyParser({multipart: true}))
 
 app.use(staticFiles(path.resolve(__dirname, './uploads'), {
