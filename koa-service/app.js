@@ -22,9 +22,9 @@ app.use(async (context, next) => {
   try {
     await next()
   } catch (ex) {
-    console.log('code Error http', ex)
-    if (context.status === 404 && context.body === '') {
-      context.status = ex.code || 500
+    context.body = {
+      status: -1,
+      message: ex.message
     }
   }
 })
