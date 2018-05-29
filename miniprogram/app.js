@@ -4,27 +4,28 @@ import SERVER from './server/index'
 App({
   Store,
   onLaunch() {
-    wx.checkSession().then(()=>{
-      if(!wx.getStorageSync('sessionKey')){
-        SERVER.wxLogin().then(res=>{
-          this.getPics()
-        })
-      }else{
-        this.getPics()
-      }
-    }).catch(e=>{
+    if(!wx.getStorageSync('sessionKey')){
       SERVER.wxLogin().then(res=>{
         this.getPics()
       })
-    })
+    }else{
+      this.getPics()
+    }
   },
   getPics(){
+    let _count = 0
     SERVER.getPics().then(res => {
       const _data = res.data
       if (_data.status == 0) {
         Store.dispatch({
           type: "MODIFY_PICS",
           datas: _data.data || []
+        })
+      }else{
+        if(_count >=3) return
+        SERVER.wxLogin().then(res=>{
+          _count++
+          this.getPics()
         })
       }
     })
