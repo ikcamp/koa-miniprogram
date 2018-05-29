@@ -1,4 +1,5 @@
 const HOST = 'https://api.ikcamp.cn'
+// const HOST = 'http://localhost:4001'
 const SERVER_API = {
     ALBUM: '/album',
     LOGIN: '/login',
@@ -18,7 +19,23 @@ const HTTP = (url, option = {}, fn = 'request') => {
             'x-session': sessionKey
         }
     }, option)
-    return wx[fn](opt)
+    return new Promise((resolve, reject)=>{
+        wx[fn](opt).then(res=>{
+            if(res.data.status == -1){
+                wx.showModal({
+                    title: '错误提示',
+                    content: res.data.message || '网络接口错误'
+                })
+            }
+            resolve(res)
+        }).catch(e=>{
+            wx.showModal({
+                title: '错误提示',
+                content: '网络异常'
+            })
+            reject(e)
+        })
+    })
 }
 module.exports = {
     HOST,
