@@ -26,8 +26,14 @@ const HTTP = (url, option = {}, fn = 'request') => {
                     title: '错误提示',
                     content: res.data.message || '网络接口错误'
                 })
+                reject(res)
+            }else if(res.data.status == '100001'){
+                SERVER.wxLogin().then(()=>{
+                    resolve(res)
+                }).catch(reject)
+            }else{
+                resolve(res)
             }
-            resolve(res)
         }).catch(e=>{
             wx.showModal({
                 title: '错误提示',
@@ -37,7 +43,7 @@ const HTTP = (url, option = {}, fn = 'request') => {
         })
     })
 }
-module.exports = {
+const SERVER = {
     HOST,
     FM: '../../assets/fengmian.png',
     getPics() {
@@ -80,3 +86,4 @@ module.exports = {
         })
     }
 }
+module.exports = SERVER

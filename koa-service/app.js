@@ -28,9 +28,13 @@ app.use(async (context, next) => {
   try {
     await next()
   } catch (ex) {
-    context.body = {
-      status: -1,
-      message: ex.message
+    if(ex.status){
+      context.body = ex
+    }else{
+      context.body = {
+        status: -1,
+        message: ex.message
+      }
     }
   }
 })
