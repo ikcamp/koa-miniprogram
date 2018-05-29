@@ -27,11 +27,6 @@ App({
           datas: _data.data || []
         })
       }
-    }).catch(e => {
-      wx.showModal({
-        title: '提示',
-        content: '获取相册信息失败'
-      })
     })
   }
 })
