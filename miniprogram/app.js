@@ -4,19 +4,13 @@ import SERVER from './server/index'
 App({
   Store,
   onLaunch() {
-    wx.checkSession().then(()=>{
-      if(!wx.getStorageSync('sessionKey')){
-        SERVER.wxLogin().then(res=>{
-          this.getPics()
-        })
-      }else{
-        this.getPics()
-      }
-    }).catch(e=>{
+    if(!wx.getStorageSync('sessionKey')){
       SERVER.wxLogin().then(res=>{
         this.getPics()
       })
-    })
+    }else{
+      this.getPics()
+    }
   },
   getPics(){
     let _count = 0
