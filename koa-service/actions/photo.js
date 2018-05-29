@@ -33,20 +33,13 @@ module.exports = {
       }))
     }else{
       albums = await album.getAlbums(openId)
-      return Promise.all(albums.map(item => {
+      return Promise.all(albums.map(async function(item){
         const id = item._id
-        const photo_id = item.photoId
-        return photo.getPhotosByAlbumId(id).then(ps => {
-          return photo.getPhotoById(photo_id).then(p=>{
-            item.fm = (p && p.url && p.isApproved && !p.isDelete)?p.url: null
-            return Object.assign({
-              photoCount: ps.length
-            }, item)
-          }).catch(e=>{
-            return Object.assign({
-              photoCount: ps.length
-            }, item)
-          })
+        return await photo.getPhotosByAlbumId(id).then(ps => {
+          return Object.assign({
+            photoCount: ps.length,
+            fm: ps[0] && ps[0].url || null
+          }, item)
         })
       }))
     }
