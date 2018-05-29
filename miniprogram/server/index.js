@@ -41,7 +41,7 @@ module.exports = {
     HOST,
     FM: '../../assets/fengmian.png',
     getPics() {
-        return HTTP(SERVER_API.ALBUM)
+        return HTTP(`/xcx${SERVER_API.ALBUM}`)
     },
     addPics(name) {
         return HTTP(SERVER_API.ALBUM, {
@@ -55,7 +55,7 @@ module.exports = {
         return HTTP(SERVER_API.PHOTO, opt, 'uploadFile')
     },
     getPic(id) {
-        return HTTP(`${SERVER_API.ALBUM}/${id}`)
+        return HTTP(`/xcx${SERVER_API.ALBUM}/${id}`)
     },
     login(code) {
         return HTTP(SERVER_API.LOGIN, {
@@ -74,7 +74,6 @@ module.exports = {
                     wx.setStorageSync('sessionKey', data.sessionKey)
                     resolve(data)
                 }).catch(e => {
-                    console.error('http error', e)
                     reject(e)
                 })
             })
