@@ -15,7 +15,7 @@ router.get('/login', async (context, next) => {
   }
 })
 
-router.get('/updateUserName', async (context, next) => {
+router.get('/updateUserName', auth, async (context, next) => {
   const {
     name
   } = context.query
@@ -30,7 +30,7 @@ router.get('/login/ercode', async (context, next) => {
   }
 })
 
-router.put('/login/ercode/:code', async (context, next) => {
+router.put('/login/ercode/:code', auth, async (context, next) => {
   const code = context.params.code
   const sessionKey = context.body.sessionKey
   await account.setSessionKeyForCode(code, sessionKey)
@@ -38,7 +38,7 @@ router.put('/login/ercode/:code', async (context, next) => {
 
 router.get('/login/errcode/check/:code', async (context, next) => {
   const startTime = Date.now()
-  async function login() {
+  async function login () {
     const code = context.params.code
     const sessionKey = await account.getSessionKeyByCode(code)
     if (sessionKey) {
@@ -94,7 +94,7 @@ router.del('/album/:id', auth, async (context, next) => {
 
 const storage = multer.diskStorage({
   destination: path.join(__dirname, 'uploads'),
-  filename(req, file, cb) {
+  filename (req, file, cb) {
     const ext = path.extname(file.originalname)
     cb(null, uuid.v4() + ext)
   }
@@ -143,6 +143,7 @@ router.put('/admin/photo/approve/:id', auth, async (context, next) => {
   } else {
     context.throw(403, '该用户无权限')
   }
+  await next()
 })
 
 router.get('/admin/user', async (context, next) => {
@@ -150,6 +151,7 @@ router.get('/admin/user', async (context, next) => {
     status: 0,
     data: await account.getUsers(context.query.pageIndex || 1, context.query.pageSize || 10)
   }
+  await next()
 })
 
 router.get('/admin/user/:id/userType/:type', async (context, next) => {
@@ -157,6 +159,8 @@ router.get('/admin/user/:id/userType/:type', async (context, next) => {
     status: 0,
     data: await account.setUserType(context.params.id, context.params.type)
   }
+  context.body = body
+  await next()
 })
 
 module.exports = router
