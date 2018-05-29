@@ -15,15 +15,11 @@ app.use(staticFiles(path.resolve(__dirname, './uploads'), {
 
 app.use(async (context, next) => {
   context.type = JSON_MIME
-  context.body = {
-    status: 0
-  }
   await next()
 })
 
 app.use(async (context, next) => {
   try {
-    // await open()
     await next()
   } catch (ex) {
     console.log('code Error http', ex)
@@ -31,7 +27,6 @@ app.use(async (context, next) => {
       context.status = ex.code || 500
     }
   }
-  // await close()
 })
 
 app.use(router.routes())
