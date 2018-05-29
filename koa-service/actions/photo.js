@@ -20,15 +20,36 @@ module.exports = {
     return photo.getPhotoById(id)
   },
   async getAlbums (openId, pageIndex, pageSize) {
-    const albums = await album.getAlbums(openId, pageIndex, pageSize)
-    return Promise.all(albums.map(item => {
-      const id = item._id
-      return photo.getPhotosByAlbumId(id).then(ps => {
-        return Object.assign({
-          photoCount: ps.length
-        }, item)
-      })
-    }))
+    let albums
+    if(pageSize){
+      albums = await album.getAlbums(openId, pageIndex, pageSize)
+      return Promise.all(albums.map(item => {
+        const id = item._id
+        return photo.getPhotosByAlbumId(id).then(ps => {
+          return Object.assign({
+            photoCount: ps.length
+          }, item)
+        })
+      }))
+    }else{
+      albums = await album.getAlbums(openId)
+      return Promise.all(albums.map(item => {
+        const id = item._id
+        const photo_id = item.photoId
+        return photo.getPhotosByAlbumId(id).then(ps => {
+          return photo.getPhotoById(photo_id).then(p=>{
+            item.fm = (p && p.url && p.isApproved && !p.isDelete)?p.url: null
+            return Object.assign({
+              photoCount: ps.length
+            }, item)
+          }).catch(e=>{
+            return Object.assign({
+              photoCount: ps.length
+            }, item)
+          })
+        })
+      }))
+    }
   },
   async addAlbum (openId, name) {
     return album.add(openId, name)

@@ -5,20 +5,17 @@ const {
 
 module.exports = {
   async add (openId, url, albumId) {
-    try {
-      await Album.update({
-        _id: albumId
-      }, {
-        fm: url
-      })
-    } catch (e) {
-      console.log(e)
-    }
-    return Phopto.create({
+    let _photo = await Phopto.create({
       openId,
       url,
       albumId
     })
+    await Album.update({
+      _id: albumId
+    }, {
+      photoId: _photo._id
+    })
+    return _photo
   },
   async approve (id) {
     return Phopto.update({
@@ -35,22 +32,44 @@ module.exports = {
     })
   },
   async getPhotos (openId, albumId, pageIndex, pageSize) {
-    let result = await Phopto.find({
-      openId,
-      albumId,
-      isApproved: true,
-      isDelete: false
-    }).sort({
-      'created': -1
-    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+    let result 
+    if(pageSize){
+      result = await Phopto.find({
+        openId,
+        albumId,
+        isApproved: true,
+        isDelete: false
+      }).sort({
+        'created': -1
+      }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+    }else{
+      result = result = await Phopto.find({
+        openId,
+        albumId,
+        isApproved: true,
+        isDelete: false
+      }).sort({
+        'created': -1
+      })
+    }
     return result
   },
   async getPhotosByAlbumId (albumId, pageIndex, pageSize) {
-    return Phopto.find({
-      albumId,
-      isApproved: true,
-      isDelete: false
-    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+    let result
+    if(pageSize){
+      result = await Phopto.find({
+        albumId,
+        isApproved: true,
+        isDelete: false
+      }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+    }else{
+      result = await Phopto.find({
+        albumId,
+        isApproved: true,
+        isDelete: false
+      })
+    }
+    return result
   },
   async getApprovingPhotos (pageIndex, pageSize) {
     return Phopto.find({
