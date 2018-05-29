@@ -16,7 +16,7 @@ function decode (str) {
   decoded += decoder.final('utf8')
   const arr = decoded.split('|')
   return {
-    id: parseInt(arr[0]),
+    id: arr[0],
     timespan: parseInt(arr[1])
   }
 }

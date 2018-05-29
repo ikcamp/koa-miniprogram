@@ -17,7 +17,7 @@ const getByOpenId = async (openId) => {
 }
 
 module.exports = {
-  async login(openId) {
+  async login (openId) {
     let user = await getByOpenId(openId)
     if (!user) {
       user = await User.create({
@@ -35,7 +35,7 @@ module.exports = {
       sessionKey
     }
   },
-  async findBySessionKey(sessionKey) {
+  async findBySessionKey (sessionKey) {
     const {
       id,
       timespan
@@ -52,34 +52,34 @@ module.exports = {
     }
     return null
   },
-  async updateName(name, sessionKey) {
+  async updateName (name, sessionKey) {
     return User.update({
       sessionKey: sessionKey
     }, {
       name: name
     })
   },
-  async updateUserType(id, type) {
+  async updateUserType (id, type) {
     return User.update({
       _id: id
     }, {
-      userType: userType
+      userType: type
     })
   },
-  async getAdmins() {
+  async getAdmins () {
     return User.find({
       userType: 1
     })
   },
-  async isAdmin(id) {
+  async isAdmin (id) {
     const user = await User.findById(id)
     return user.userType === 1
   },
-  async isLocked(id) {
+  async isLocked (id) {
     const user = await User.findById(id)
     return user.userType === -1
   },
-  async getUsers(pageIndex, pageSize) {
+  async getUsers (pageIndex, pageSize) {
     return User.find().skip((pageIndex - 1) * pageSize).limit(pageSize)
   }
 }
