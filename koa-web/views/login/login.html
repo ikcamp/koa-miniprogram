@@ -1,1 +1,52 @@
-{% extends 'layout.html' %}
+{% extends '../common/layout.html' %}
+
+{% block head %}
+<link rel="stylesheet" href='../css/login.css'>
+{% endblock %}
+
+{% block header %}
+<div class="logo">iKCamp</div>
+{% endblock %}
+
+{% block body %}
+<main class="login-container">
+    <div class="code-container">
+        <div class="login-title">微信扫码登录</div>
+        <div id="j_qrcode" class="qrcode" data-id={{qrcode}}></div>
+    </div>
+</main>
+{% endblock %}
+
+{% block footer %}
+<footer>
+        <div class="col-sm-12">
+            <p class="police">
+                <a href="http://www.miibeian.gov.cn/">沪ICP备17041059号-2 ©2017-2018</a>
+            </p>
+            <div class="gov_item_box">
+                <a target="_blank" href="http://jubao.china.cn:13225/reportform.do" class="gov_item gov_item1">
+                    <i></i>
+                    <span>中国互联网举报中心</span>
+                </a>
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33110202000271" class="gov_item gov_item2">
+                    <i></i>
+                    <span>互联网站备案信息</span>
+                </a>
+                <a target="_blank" href="http://www.shjbzx.cn/" class="gov_item gov_item3">
+                    <i></i>
+                    <span>上海互联网举报中心</span>
+                </a>
+                <a target="_blank" href="http://www.cyberpolice.cn/wfjb/" class="gov_item gov_item5">
+                    <i></i>
+                    <span>上海网络报警平台</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+
+{% block extra %}
+{{ super() }}
+<script src="../js/qrcode.js"></script>
+<script src="../js/login.js"></script>
+{% endblock %}

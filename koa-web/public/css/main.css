@@ -120,7 +120,7 @@ body {
  .multi-select::after {
    content: '多选';
  }
- .multi-select-active::after {
+ .multi-select.active::after {
    content: '完成';
  }
  .card-center {
@@ -220,7 +220,10 @@ body {
   display: block;
   position: fixed;
   right: 0;
-  bottom: 30px;
+  bottom: 0;
+  padding-bottom: 30px;
+  background: #fff;
+  z-index: 20;
 }
 .input-group-prepend {
   position: relative;
@@ -277,3 +280,9 @@ body {
  .page-link {
    color: #FFA500;
  }
+ .select-all::after {
+  content: '全选';
+}
+.select-all.active::after {
+  content: '取消';
+}

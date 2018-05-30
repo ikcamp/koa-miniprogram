@@ -8,38 +8,20 @@
 
     <!-- 引入boostrap相关静态文件 -->
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <!-- 主要样式文件 -->
-    <link rel="stylesheet" href='../css/main.css'>
 
     {% block head %} 
     {% endblock %}
 </head>
 
 <body>
-    {% include './header.html' %} 
+    {% block header %}
+    {% endblock %}
 
     {% block body %}
-        <div class="container-fluid">
-            <div class="row">
-                  <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                    <div class="sidebar-sticky">
-                      <ul class="nav flex-column" id="sidebar_list">
-                          {% for item in menu %}
-                          <li class="nav-item j-nav-item">
-                                <a class="nav-link {{'active' if activeMenu === loop.index0 else ''}}" href='{{item.url}}'>
-                                    <span data-feather={{item.icon}}></span>
-                                    {{item.title}}
-                                </a>
-                            </li>
-                          {% endfor %}
-                        </ul>
-                    </div>
-                  </nav>
-            </div>
-        </div>
     {% endblock %}
-    
-    {% include './footer.html' %} 
+
+    {% block footer %}
+    {% endblock %}
 
     <!-- 引入boostrap相关静态文件 -->
     <script src="../js/jquery-3.3.1.slim.min.js"></script>
@@ -52,12 +34,8 @@
         feather.replace();
     </script>
 
-    <script src="../js/util.js"></script>
-
     {% block extra %}
-    <script>
-	// 页面JavaScript代码
-    </script> 
+    <script src="../js/util.js"></script>
     {% endblock %}
 </body>
 </html>

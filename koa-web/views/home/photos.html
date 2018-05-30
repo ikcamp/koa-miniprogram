@@ -1,4 +1,4 @@
-{% extends '../common/layout.html' %} 
+{% extends './layout.html' %} 
 {% block body %}
 {{ super() }}
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 main-container">
@@ -87,6 +87,9 @@
     </main>
     <div class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 approve-btn" id="j_approve_group">
             <div class="btn-group mr-2">
+                    <button class="btn btn-sm btn-outline-secondary select-all" id='j_select_all'></button>
+                  </div>
+            <div class="btn-group mr-2">
                 <button class="btn btn-sm btn-outline-secondary j-mani-btn">
                     <span data-feather='check-square' data-id='1'></span>
                 </button>
@@ -98,7 +101,4 @@
                 </button>
             </div>
     </div>
-{% endblock %}
-{% block extra %}
-<script src="../js/main.js"></script>
 {% endblock %}
