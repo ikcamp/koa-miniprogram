@@ -1,6 +1,6 @@
 const {
   login,
-  updateName,
+  update,
   updateUserType,
   getUsers
 } = require('../lib/db/user')
@@ -26,8 +26,8 @@ module.exports = {
       throw new Error('登陆失败')
     }
   },
-  async updateUserName (sessionKey, name) {
-    return updateName(name, sessionKey)
+  async update (id, data) {
+    return update(id, data)
   },
   async setUserType (id, userType) {
     return updateUserType(id, userType)
@@ -50,7 +50,9 @@ module.exports = {
   },
   async getSessionKeyByCode (code) {
     const sessionKey = await getSessionKey(code)
-    await removeData(code)
+    if (sessionKey) {
+      await removeData(code)
+    }
     return sessionKey
   }
 }

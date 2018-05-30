@@ -22,7 +22,7 @@ module.exports = {
     if (data) {
       return code.sessionKey
     } else {
-      throw new Error('session Key is not exist')
+      return null
     }
   },
   async removeData (code) {
