@@ -22,12 +22,8 @@ router.get('/login', async (context, next) => {
   }
 })
 
-router.get('/updateUserName', auth, async (context, next) => {
-  const {
-    name
-  } = context.query
-  const sessionKey = context.get('x-session') || context.cookies.get('session_id')
-  await account.updateUserName(sessionKey, name)
+router.put('/user', auth, async (context, next) => {
+  await account.update(this.state.userId, context.request.body)
 }, responseOK)
 
 router.get('/login/ercode', async (context, next) => {
@@ -37,9 +33,9 @@ router.get('/login/ercode', async (context, next) => {
   }
 })
 
-router.put('/login/ercode/:code', auth, async (context, next) => {
+router.get('/login/ercode/:code', auth, async (context, next) => {
   const code = context.params.code
-  const sessionKey = context.body.sessionKey
+  const sessionKey = context.get('x-session')
   await account.setSessionKeyForCode(code, sessionKey)
 }, responseOK)
 

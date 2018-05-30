@@ -8,6 +8,7 @@ module.exports = async function (context, next) {
   }
   const user = await findBySessionKey(sessionKey)
   if (user) {
+    context.state.userId = user._id
     context.state.openId = user.openId
     context.state.isAdmin = user.userType === 1
   } else {
