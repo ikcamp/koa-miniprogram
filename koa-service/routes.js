@@ -22,12 +22,8 @@ router.get('/login', async (context, next) => {
   }
 })
 
-router.get('/updateUserName', auth, async (context, next) => {
-  const {
-    name
-  } = context.query
-  const sessionKey = context.get('x-session') || context.cookies.get('session_id')
-  await account.updateUserName(sessionKey, name)
+router.put('/user', auth, async (context, next) => {
+  await account.update(this.state.userId, context.request.body)
   await next()
 }, responseOK)
 
@@ -38,9 +34,9 @@ router.get('/login/ercode', async (context, next) => {
   }
 })
 
-router.put('/login/ercode/:code', auth, async (context, next) => {
+router.get('/login/ercode/:code', auth, async (context, next) => {
   const code = context.params.code
-  const sessionKey = context.body.sessionKey
+  const sessionKey = context.get('x-session')
   await account.setSessionKeyForCode(code, sessionKey)
   await next()
 }, responseOK)
@@ -51,15 +47,20 @@ router.get('/login/errcode/check/:code', async (context, next) => {
     const code = context.params.code
     const sessionKey = await account.getSessionKeyByCode(code)
     if (sessionKey) {
-      context.cookies.set('session_id', sessionKey, {
-        httpOnly: true
-      })
       context.body = {
-        status: 0
+        status: 0,
+        data: {
+          sessionKey: sessionKey
+        }
       }
     } else {
       if (Date.now() - startTime < 10000) {
-        process.nextTick(login)
+        await new Promise((resolve) => {
+          process.nextTick(() => {
+            resolve()
+          })
+        })
+        await login()
       } else {
         context.body = {
           status: -1
