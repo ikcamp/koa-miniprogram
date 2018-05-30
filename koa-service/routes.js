@@ -45,15 +45,20 @@ router.get('/login/errcode/check/:code', async (context, next) => {
     const code = context.params.code
     const sessionKey = await account.getSessionKeyByCode(code)
     if (sessionKey) {
-      context.cookies.set('session_id', sessionKey, {
-        httpOnly: true
-      })
       context.body = {
-        status: 0
+        status: 0,
+        data: {
+          sessionKey: sessionKey
+        }
       }
     } else {
       if (Date.now() - startTime < 10000) {
-        process.nextTick(login)
+        await new Promise((resolve) => {
+          process.nextTick(() => {
+            resolve()
+          })
+        })
+        await login()
       } else {
         context.body = {
           status: -1
