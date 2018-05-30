@@ -22,12 +22,12 @@ module.exports = {
     })
   },
   async getAlbums (openId, pageIndex, pageSize) {
-    let result 
-    if(pageSize){
+    let result
+    if (pageSize) {
       result = await Album.find({
         openId
       }).skip((pageIndex - 1) * pageSize).limit(pageSize)
-    }else{
+    } else {
       result = await Album.find({
         openId
       }).sort({

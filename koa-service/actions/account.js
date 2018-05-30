@@ -38,13 +38,16 @@ module.exports = {
   async getErCode () {
     const code = encodeErCode()
     await add(code)
+    setTimeout(() => {
+      removeData(code)
+    }, 30000)
     return code
   },
   async setSessionKeyForCode (code, sessionKey) {
     const {timespan} = decode(code)
     // 30s 过期
     if (Date.now() - timespan > 30000) {
-      throw new Error('ercode timeout')
+      throw new Error('time out')
     }
     await updateSessionKey(code, sessionKey)
   },

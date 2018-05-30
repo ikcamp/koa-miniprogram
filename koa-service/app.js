@@ -28,13 +28,10 @@ app.use(async (context, next) => {
   try {
     await next()
   } catch (ex) {
-    if(ex.status){
-      context.body = ex
-    }else{
-      context.body = {
-        status: -1,
-        message: ex.message
-      }
+    context.body = {
+      status: -1,
+      message: ex.message,
+      code: ex.status
     }
   }
 })
