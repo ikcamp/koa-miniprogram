@@ -5,10 +5,10 @@ page = {
 function interval(qrcode){
     send('GET',null,`/check?code=${qrcode}`,function(data){
         console.log(data)
-        if(data !== 1){
-            interval()
-        } else {
+        if(data === 1){
             window.location.href = '/photos';
+        } else {
+            interval()
         }
     })
 }

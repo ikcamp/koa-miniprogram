@@ -10,7 +10,13 @@ module.exports = {
         ctx.response.body = res.data.data;
     },
     checkAuth: async(ctx, next) => {
-        const res = await axios.get(`https://api.ikcamp.cn/login/errcode/check/${ctx.query.code}`)
+        let code = parseInt(ctx.query.code);
+        const res = await axios.get(`https://api.ikcamp.cn/login/errcode/check/${code}`)
         console.log(res)
+        if(res.status === 200){
+            ctx.response.body = res.data.status;
+        } else {
+            ctx.response.body = -1;
+        }
     }
 }
