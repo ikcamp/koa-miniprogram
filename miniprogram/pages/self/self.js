@@ -1,4 +1,5 @@
 import connect from "../../utils/connect"
+import SERVER from "../../server/index"
 const mapStateToProps = (state) => {
   return {
     userInfo: state.userInfo
@@ -11,8 +12,9 @@ Page(connect(mapStateToProps)({
     canIUseOpenSetting: wx.canIUse('button.open-type.openSetting')
   },
   onLoad() {
-    console.log("用户中心页面")
-    this.getUserInfo()
+    SERVER.wxLogin().finally(e=>{
+      this.getUserInfo()
+    })
   },
   //事件处理函数
   bindViewTap: function () {
@@ -32,6 +34,12 @@ Page(connect(mapStateToProps)({
       type: "MODIFY_USER",
       datas: res.userInfo
     })
+    SERVER.updateUserInfo({
+      avatar: res.userInfo.avatarUrl,
+      name: res.userInfo.nickName
+    }).catch(e=>{
+      console.log(e)
+    })
   },
   getUserInfoHandle: function (e) {
     console.log(e)
@@ -46,8 +54,18 @@ Page(connect(mapStateToProps)({
     wx.scanCode({
       onlyFromCamera: true
     }).then(res=>{
-      console.log(res)
-    }).catch(e=>{})
+      SERVER.scanCode(res.result).then(e=>{
+        wx.showToast({
+          title: '登录成功',
+          icon: 'success',
+          duration: 2000
+        })
+      }).catch(e=>{
+        console.log(e)
+      })
+    }).catch(e=>{
+      console.log(e)
+    })
   },
   openSettingHandle(e){
     if(e.detail.authSetting['scope.userInfo']) this.getUserInfo()
