@@ -50,7 +50,9 @@ module.exports = {
   },
   async getSessionKeyByCode (code) {
     const sessionKey = await getSessionKey(code)
-    await removeData(code)
+    if (sessionKey) {
+      await removeData(code)
+    }
     return sessionKey
   }
 }
