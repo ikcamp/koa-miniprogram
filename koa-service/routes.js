@@ -7,6 +7,13 @@ const uuid = require('uuid')
 const multer = require('koa-multer')
 const path = require('path')
 
+async function responseOK (ctx, next) {
+  ctx.body = {
+    status: 0
+  }
+  await next()
+}
+
 router.get('/login', async (context, next) => {
   const code = context.query.code
   context.body = {
@@ -15,13 +22,14 @@ router.get('/login', async (context, next) => {
   }
 })
 
-router.get('/updateUserName', async (context, next) => {
+router.get('/updateUserName', auth, async (context, next) => {
   const {
     name
   } = context.query
   const sessionKey = context.get('x-session') || context.cookies.get('session_id')
   await account.updateUserName(sessionKey, name)
-})
+  await next()
+}, responseOK)
 
 router.get('/login/ercode', async (context, next) => {
   context.body = {
@@ -30,15 +38,16 @@ router.get('/login/ercode', async (context, next) => {
   }
 })
 
-router.put('/login/ercode/:code', async (context, next) => {
+router.put('/login/ercode/:code', auth, async (context, next) => {
   const code = context.params.code
   const sessionKey = context.body.sessionKey
   await account.setSessionKeyForCode(code, sessionKey)
-})
+  await next()
+}, responseOK)
 
 router.get('/login/errcode/check/:code', async (context, next) => {
   const startTime = Date.now()
-  async function login() {
+  async function login () {
     const code = context.params.code
     const sessionKey = await account.getSessionKeyByCode(code)
     if (sessionKey) {
@@ -68,9 +77,22 @@ router.get('/album', auth, async (context, next) => {
     status: 0
   }
 })
-
+router.get('/xcx/album', auth, async (context, next) => {
+  const albums = await photo.getAlbums(context.state.openId)
+  context.body = {
+    data: albums,
+    status: 0
+  }
+})
 router.get('/album/:id', auth, async (context, next) => {
   const photos = await photo.getPhotos(context.state.openId, context.params.id, context.query.pageIndex || 1, context.query.pageSize || 10)
+  context.body = {
+    status: 0,
+    data: photos
+  }
+})
+router.get('/xcx/album/:id', auth, async (context, next) => {
+  const photos = await photo.getPhotos(context.state.openId, context.params.id)
   context.body = {
     status: 0,
     data: photos
@@ -82,19 +104,22 @@ router.post('/album', auth, async (context, next) => {
     name
   } = context.request.body
   await photo.addAlbum(context.state.openId, name)
-})
+  await next()
+}, responseOK)
 
 router.put('/album/:id', auth, async (context, next) => {
   await photo.updateAlbum(context.params.id, context.body.name)
-})
+  await next()
+}, responseOK)
 
 router.del('/album/:id', auth, async (context, next) => {
   await photo.deleteAlbum(context.params.id)
-})
+  await next()
+}, responseOK)
 
 const storage = multer.diskStorage({
   destination: path.join(__dirname, 'uploads'),
-  filename(req, file, cb) {
+  filename (req, file, cb) {
     const ext = path.extname(file.originalname)
     cb(null, uuid.v4() + ext)
   }
@@ -112,7 +137,8 @@ router.post('/photo', auth, uplader.single('file'), async (context, next) => {
     id
   } = context.req.body
   await photo.add(context.state.openId, file.filename, id)
-})
+  await next()
+}, responseOK)
 
 router.delete('/photo/:id', auth, async (context, next) => {
   const p = await photo.getPhotoById(context.params.id)
@@ -123,7 +149,8 @@ router.delete('/photo/:id', auth, async (context, next) => {
       context.throw(403, '该用户无权限')
     }
   }
-})
+  await next()
+}, responseOK)
 
 router.get('/admin/photo/aprove', auth, async (context, next) => {
   if (context.state.isAdmin) {
@@ -143,13 +170,15 @@ router.put('/admin/photo/approve/:id', auth, async (context, next) => {
   } else {
     context.throw(403, '该用户无权限')
   }
-})
+  await next()
+}, responseOK)
 
 router.get('/admin/user', async (context, next) => {
   context.body = {
     status: 0,
     data: await account.getUsers(context.query.pageIndex || 1, context.query.pageSize || 10)
   }
+  await next()
 })
 
 router.get('/admin/user/:id/userType/:type', async (context, next) => {
@@ -157,6 +186,8 @@ router.get('/admin/user/:id/userType/:type', async (context, next) => {
     status: 0,
     data: await account.setUserType(context.params.id, context.params.type)
   }
+  context.body = body
+  await next()
 })
 
 module.exports = router

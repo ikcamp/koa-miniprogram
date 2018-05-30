@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     index: true
   },
   userType: {
-    type: int
+    type: Number
   }
 })
 
@@ -28,11 +28,8 @@ const albumSchema = new mongoose.Schema({
   },
   name: {
     type: String
-  },
-  fm: {
-    type: String
   }
-},{
+}, {
   versionKey: false,
   timestamps: { createdAt: 'created', updatedAt: 'updated' }
 })
@@ -57,7 +54,7 @@ const photoSchema = new mongoose.Schema({
     default: Date.now
   },
   isDelete: {
-    type: boolean,
+    type: Boolean,
     default: false
   }
 })
@@ -75,4 +72,3 @@ module.exports = {
   Album: mongoose.model('album', albumSchema),
   Code: mongoose.model('code', codeSchema)
 }
-

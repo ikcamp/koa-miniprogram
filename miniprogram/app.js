@@ -4,19 +4,13 @@ import SERVER from './server/index'
 App({
   Store,
   onLaunch() {
-    wx.checkSession().then(()=>{
-      if(!wx.getStorageSync('sessionKey')){
-        SERVER.wxLogin().then(res=>{
-          this.getPics()
-        })
-      }else{
-        this.getPics()
-      }
-    }).catch(e=>{
+    if(!wx.getStorageSync('sessionKey')){
       SERVER.wxLogin().then(res=>{
         this.getPics()
       })
-    })
+    }else{
+      this.getPics()
+    }
   },
   getPics(){
     SERVER.getPics().then(res => {
@@ -27,11 +21,6 @@ App({
           datas: _data.data || []
         })
       }
-    }).catch(e => {
-      wx.showModal({
-        title: '提示',
-        content: '获取相册信息失败'
-      })
     })
   }
 })

@@ -3,19 +3,19 @@ const {
 } = require('./model')
 
 module.exports = {
-  async add(code) {
+  async add (code) {
     return Code.create({
       code: code
     })
   },
-  async updateSessionKey(code, sessionKey) {
+  async updateSessionKey (code, sessionKey) {
     return Code.update({
       code: code
     }, {
       sessionKey: sessionKey
     })
   },
-  async getSessionKey(code) {
+  async getSessionKey (code) {
     const data = await Code.findOne({
       code: code
     })
@@ -25,7 +25,7 @@ module.exports = {
       throw new Error('session Key is not exist')
     }
   },
-  async removeData(code){
+  async removeData (code) {
     return Code.deleteMany({
       code: code
     })

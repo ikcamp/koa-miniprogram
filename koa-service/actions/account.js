@@ -15,42 +15,41 @@ const {
   decode
 } = require('../lib/crypto')
 module.exports = {
-  async login(code) {
+  async login (code) {
     const session = await getSession(code)
     if (session) {
       const {
-        openid,
-        session_key
+        openid
       } = session
       return login(openid)
     } else {
       throw new Error('登陆失败')
     }
   },
-  async updateUserName(sessionKey, name) {
+  async updateUserName (sessionKey, name) {
     return updateName(name, sessionKey)
   },
-  async setUserType(id, userType) {
+  async setUserType (id, userType) {
     return updateUserType(id, userType)
   },
-  async getUsers(pageIndex, pageSize) {
+  async getUsers (pageIndex, pageSize) {
     return getUsers(pageIndex, pageSize)
   },
-  async getErCode() {
+  async getErCode () {
     const code = encodeErCode()
     await add(code)
     return code
   },
-  async setSessionKeyForCode(code, sessionKey) {
+  async setSessionKeyForCode (code, sessionKey) {
     const {timespan} = decode(code)
     // 30s 过期
-    if(Date.now() - timespan > 30000){
+    if (Date.now() - timespan > 30000) {
       throw new Error('ercode timeout')
     }
     await updateSessionKey(code, sessionKey)
   },
-  async getSessionKeyByCode(code){
-    const sessionKey = await getSessionKeyByCode(code)
+  async getSessionKeyByCode (code) {
+    const sessionKey = await getSessionKey(code)
     await removeData(code)
     return sessionKey
   }
