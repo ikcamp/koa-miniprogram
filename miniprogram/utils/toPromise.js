@@ -1,4 +1,4 @@
-let wxKeys = ["request", "login", "uploadFile", "chooseImage", "checkSession"]
+let wxKeys = ["request", "login", "uploadFile", "chooseImage", "checkSession", "getSetting", "openSetting", "showModal", "getUserInfo", "scanCode"]
 
 Promise.prototype.finally = function (callback) {
   let P = this.constructor
