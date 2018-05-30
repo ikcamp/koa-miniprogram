@@ -3,7 +3,8 @@ const HOST = 'https://api.ikcamp.cn'
 const SERVER_API = {
     ALBUM: '/album',
     LOGIN: '/login',
-    PHOTO: '/photo'
+    PHOTO: '/photo',
+    USER: '/user'
 }
 const HTTP = (url, option = {}, fn = 'request') => {
     let sessionKey = ''
@@ -21,16 +22,16 @@ const HTTP = (url, option = {}, fn = 'request') => {
     }, option)
     return new Promise((resolve, reject)=>{
         wx[fn](opt).then(res=>{
-            if(res.data.status == -1){
+            if(res.data.status == -1 && res.data.code == 401){
+                SERVER.wxLogin().then(()=>{
+                    resolve(res)
+                }).catch(reject)
+            }else if(res.data.status == '-1'){
                 wx.showModal({
                     title: '错误提示',
                     content: res.data.message || '网络接口错误'
                 })
                 reject(res)
-            }else if(res.data.status == '100001'){
-                SERVER.wxLogin().then(()=>{
-                    resolve(res)
-                }).catch(reject)
             }else{
                 resolve(res)
             }
@@ -62,6 +63,15 @@ const SERVER = {
     },
     getPic(id) {
         return HTTP(`/xcx${SERVER_API.ALBUM}/${id}`)
+    },
+    scanCode(code){
+        return HTTP(`/login/ercode/${code}`) 
+    },
+    updateUserInfo(data){
+        return HTTP(`${SERVER_API.USER}`,{
+            method: 'put',
+            data
+        })
     },
     login(code) {
         return HTTP(SERVER_API.LOGIN, {
