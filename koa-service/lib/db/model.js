@@ -31,9 +31,6 @@ const albumSchema = new mongoose.Schema({
   },
   name: {
     type: String
-  },
-  fm: {
-    type: String
   }
 }, {
   versionKey: false,

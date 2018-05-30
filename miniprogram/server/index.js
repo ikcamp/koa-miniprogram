@@ -1,4 +1,5 @@
-const HOST = 'https://www.ikcamp.com'
+const HOST = 'https://api.ikcamp.cn'
+// const HOST = 'http://localhost:4001'
 const SERVER_API = {
     ALBUM: '/album',
     LOGIN: '/login',
@@ -18,13 +19,35 @@ const HTTP = (url, option = {}, fn = 'request') => {
             'x-session': sessionKey
         }
     }, option)
-    return wx[fn](opt)
+    return new Promise((resolve, reject)=>{
+        wx[fn](opt).then(res=>{
+            if(res.data.status == -1){
+                wx.showModal({
+                    title: '错误提示',
+                    content: res.data.message || '网络接口错误'
+                })
+                reject(res)
+            }else if(res.data.status == '100001'){
+                SERVER.wxLogin().then(()=>{
+                    resolve(res)
+                }).catch(reject)
+            }else{
+                resolve(res)
+            }
+        }).catch(e=>{
+            wx.showModal({
+                title: '错误提示',
+                content: '网络异常'
+            })
+            reject(e)
+        })
+    })
 }
-module.exports = {
+const SERVER = {
     HOST,
     FM: '../../assets/fengmian.png',
     getPics() {
-        return HTTP(SERVER_API.ALBUM)
+        return HTTP(`/xcx${SERVER_API.ALBUM}`)
     },
     addPics(name) {
         return HTTP(SERVER_API.ALBUM, {
@@ -38,7 +61,7 @@ module.exports = {
         return HTTP(SERVER_API.PHOTO, opt, 'uploadFile')
     },
     getPic(id) {
-        return HTTP(`${SERVER_API.ALBUM}/${id}`)
+        return HTTP(`/xcx${SERVER_API.ALBUM}/${id}`)
     },
     login(code) {
         return HTTP(SERVER_API.LOGIN, {
@@ -57,10 +80,10 @@ module.exports = {
                     wx.setStorageSync('sessionKey', data.sessionKey)
                     resolve(data)
                 }).catch(e => {
-                    console.error('http error', e)
                     reject(e)
                 })
             })
         })
     }
 }
+module.exports = SERVER

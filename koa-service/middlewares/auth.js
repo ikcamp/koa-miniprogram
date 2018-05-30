@@ -12,7 +12,10 @@ module.exports = async function (context, next) {
     context.state.openId = user.openId
     context.state.isAdmin = user.userType === 1
   } else {
-    throw new Error('sessionKey 无效')
+    throw {
+      status: "100001",
+      message: "session key 过期"
+    }
   }
   await next()
 }

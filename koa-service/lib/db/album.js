@@ -22,8 +22,18 @@ module.exports = {
     })
   },
   async getAlbums (openId, pageIndex, pageSize) {
-    return Album.find({
-      openId
-    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+    let result 
+    if(pageSize){
+      result = await Album.find({
+        openId
+      }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+    }else{
+      result = await Album.find({
+        openId
+      }).sort({
+        'updated': -1
+      })
+    }
+    return result
   }
 }

@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/self/self",
+    "pages/pics/pics",
     "pages/pic/pic"
   ],
   "window": {
@@ -8,5 +9,21 @@
     "navigationBarBackgroundColor": "#11b8f5",
     "navigationBarTitleText": "云相册",
     "navigationBarTextStyle": "#fff"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/self/self",
+        "text": "我的",
+        "iconPath": "assets/self2.png",
+        "selectedIconPath": "assets/self1.png"
+      },
+      {
+        "pagePath": "pages/pics/pics",
+        "text": "相册",
+        "iconPath": "assets/pics2.png",
+        "selectedIconPath": "assets/pics1.png"
+      }
+    ]
   }
 }
