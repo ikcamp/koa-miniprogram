@@ -11,6 +11,28 @@ Page(connect(mapStateToProps)({
     Host: SERVER.HOST,
     fm: SERVER.FM
   },
+  onLoad(){
+    const {userInfo} = this.__Store.getState()
+    if(!userInfo || !userInfo.datas){
+      wx.showModal({
+        title: '授权登录',
+        content: '如需正常使用小程序功能，请授权登录。',
+        showCancel: false
+      }).then(res=>{
+        wx.reLaunch({
+          url: "/pages/self/self"
+        })
+      })
+      return
+    }
+    if(!wx.getStorageSync('sessionKey')){
+      SERVER.wxLogin().then(res=>{
+        this.getPics()
+      })
+    }else{
+      this.getPics()
+    }
+  },
   getPics() {
     SERVER.getPics().then(res => {
       const _data = res.data
