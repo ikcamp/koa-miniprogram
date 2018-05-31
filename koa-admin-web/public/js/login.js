@@ -1,19 +1,30 @@
 page = {
-    qrcode: document.getElementById('j_qrcode')
+    qrcode: document.getElementById('j_qrcode'),
+    warning: document.getElementById('j_warning'),
+    codeContainer: document.getElementById('j_container')
 }
 
 function interval(qrcode){
-    send('GET',null,`/check?code=${qrcode}`,function(data){
-        console.log(data)
-        if(data === 1){
-            window.location.href = '/photos';
+    send('GET',null,`/token?code=${qrcode}`,function(data){
+        let _data = JSON.parse(data);
+        if(_data.status === 0){
+            send('GET',null,`/check`,function(data){
+                let _data = JSON.parse(data);
+                if(_data.isAdmin){
+                    window.location.href = '/photos';
+                } else {
+                    addClass(page.warning,'login-warning');
+                }
+            })
         } else {
-            interval()
+            interval(qrcode)
         }
     })
 }
 
 window.onload = function(){
+    addClass(page.codeContainer, 'code-container-display');
+    addClass(page.qrcode, 'qrcode-display')
     let qrcode = '';
     send('GET',null,'/qrcode',function(data){
         qrcode = data;
@@ -22,10 +33,8 @@ window.onload = function(){
             width: 150,
             height: 150,
             colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
+            colorLight : "#ffffff"
         });
-        interval(qrcode)
-        // send('GET',null,`/check?code=${qrcode}`)
+        interval(qrcode);
     });
 }
