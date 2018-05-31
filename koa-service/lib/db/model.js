@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
 })
 
 const albumSchema = new mongoose.Schema({
-  openId: {
+  userId: {
     type: String
   },
   name: {
@@ -38,7 +38,7 @@ const albumSchema = new mongoose.Schema({
 })
 
 const photoSchema = new mongoose.Schema({
-  openId: {
+  userId: {
     type: String
   },
   url: {
