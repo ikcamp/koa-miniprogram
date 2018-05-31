@@ -1,6 +1,7 @@
 import shallowEqual from './shallowEqual'
 let __Store = getApp().Store
-export default (mapStateToData = () => {}) => {
+
+export default (mapStateToData = () => { }) => {
   let config = {
     __Store,
     __dispatch: __Store.dispatch,
@@ -33,6 +34,18 @@ export default (mapStateToData = () => {}) => {
         this.__destroy = this.__Store.subscribe(this.__observer)
         this.__observer()
       }
+      let state = getApp().Store.getState();
+
+      if (this.route != 'pages/self/self' && (
+        !state.userInfo ||
+        !state.userInfo.data ||
+        !state.userInfo.data.name)) {
+
+        wx.reLaunch({ url: '/pages/self/self' })
+
+        wx.showToast({ title: '请您新登陆', icon: 'none', mask: true, duration: 2000 })
+
+      }
     },
     onHide() {
       super.onHide()
@@ -40,15 +53,16 @@ export default (mapStateToData = () => {}) => {
     }
   }
   return (options = {}) => {
-    let baseObj = {
+
+    Object.setPrototypeOf(config, {
       __observer: null,
-      onLoad() {},
-      onUnload() {},
-      onShow() {},
-      onHide() {}
-    }
-    let opts = Object.assign({}, baseObj, options)
-    Object.setPrototypeOf(config, opts)
+      onLoad() { },
+      onUnload() { },
+      onShow() { },
+      onHide() { },
+      ...options
+    })
+
     return config
   }
 }

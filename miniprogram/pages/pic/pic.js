@@ -1,7 +1,9 @@
 import SERVER from "../../server/index"
 import {formatTime} from "../../utils/formatTime"
-const {Store} = getApp()
+import Store from '../../reducers/index'
+
 const dispatch = Store.dispatch
+
 Page({
   data: {
     id: '',
@@ -88,7 +90,7 @@ Page({
       if (_data.status == 0) {
         dispatch({
           type: "MODIFY_PICS",
-          datas: _data.data || []
+          data: _data.data || []
         })
       }
     })

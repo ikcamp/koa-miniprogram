@@ -51,3 +51,12 @@ button.btn-qcode{
   color: #fff;
   background: #11b8f5;
 }
+
+.footer{
+  position: absolute;
+  bottom: 10rpx;
+  font-size: 32rpx;
+  text-align: center;
+  width: 100%;
+  color: #11b8f5;
+}
