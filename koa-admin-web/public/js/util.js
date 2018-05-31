@@ -17,7 +17,7 @@ function send(type,data,url,callback){
         if(xmlhttp.readyState == XMLHttpRequest.DONE){
             if(xmlhttp.status == 200){
                 if(callback){
-                    callback();
+                    callback(xmlhttp.response);
                 }
             } else {
                 console.log("Oops!Something wrong happened~");
@@ -27,5 +27,4 @@ function send(type,data,url,callback){
     xmlhttp.open(type,url,true);
     xmlhttp.setRequestHeader("Content-type","application/json");
     xmlhttp.send(JSON.stringify(data));
-    window.location.reload();
 }
