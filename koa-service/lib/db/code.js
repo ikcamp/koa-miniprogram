@@ -20,7 +20,7 @@ module.exports = {
       code: code
     })
     if (data) {
-      return code.sessionKey
+      return data.sessionKey
     } else {
       return null
     }

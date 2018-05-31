@@ -45,7 +45,7 @@ module.exports = {
       return Object.assign({
         photoCount: ps.length,
         fm: ps[0] ? ps[0].url : null
-      }, item)
+      }, item.toObject())
     }))
     return result
   },
