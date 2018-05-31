@@ -10,7 +10,6 @@ const mapStateToProps = (state) => {
 Page(connect(mapStateToProps)({
   data: {
     hidden: true,
-    Host: SERVER.HOST,
     fm: SERVER.FM
   },
   onShow(){

@@ -8,7 +8,7 @@
     </view>
     <block wx:if="{{pics.length>0}}">
       <view class="box-item" bindtap="toDetail" wx:for="{{pics}}" wx:key="{{item._id}}" data-id="{{item._id}}" data-name="{{item.name}}">
-        <image class="item-img" mode="aspectFill" src="{{item.fm?(Host+'/'+item.fm):fm}}"></image>
+        <image class="item-img" mode="aspectFill" src="{{item.fm?item.fm:fm}}"></image>
         <view class="item-name">{{item.name}}</view>
         <view class="item-num">{{item.photoCount}}张</view>
       </view>

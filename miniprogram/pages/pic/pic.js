@@ -44,7 +44,6 @@ Page({
       let eT = formatTime(new Date(e.created))
 
       e.created = eT
-      e.url = SERVER.HOST + '/' + e.url
 
       let _index = result.length
 
@@ -83,7 +82,7 @@ Page({
     })
   },
   updatePics() {
-    
+
     SERVER.getPics().then(res => {
       const _data = res.data
 
