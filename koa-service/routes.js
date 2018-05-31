@@ -155,7 +155,7 @@ router.post('/photo', auth, uplader.single('file'), async (context, next) => {
 router.delete('/photo/:id', auth, async (context, next) => {
   const p = await photo.getPhotoById(context.params.id)
   if (p) {
-    if (p.userId === context.state.user.id || context.state.isAdmin) {
+    if (p.userId === context.state.user.id || context.state.user.isAdmin) {
       await photo.delete(context.params.id)
     } else {
       context.throw(403, '该用户无权限')
@@ -165,7 +165,7 @@ router.delete('/photo/:id', auth, async (context, next) => {
 }, responseOK)
 
 router.get('/admin/photo/aprove', auth, async (context, next) => {
-  if (context.state.isAdmin) {
+  if (context.state.user.isAdmin) {
     const photos = await photo.getApprovingPhotos(context.query.pageIndex || 1, context.query.pageSize || 10)
     context.body = {
       status: 0,
@@ -177,7 +177,7 @@ router.get('/admin/photo/aprove', auth, async (context, next) => {
 })
 
 router.put('/admin/photo/approve/:id', auth, async (context, next) => {
-  if (context.state.isAdmin) {
+  if (context.state.user.isAdmin) {
     await photo.approve(context.params.id)
   } else {
     context.throw(403, '该用户无权限')
