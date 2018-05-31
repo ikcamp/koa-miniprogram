@@ -1,7 +1,7 @@
 {
   "apps" : [{
     "name"        : "node-xcx-service",
-    "script"      : "./worker.js",
+    "script"      : "./app.js",
     "watch"       : true,
     "ignore_watch": ["uploads"],
     "env": {
