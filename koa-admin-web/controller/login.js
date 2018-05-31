@@ -12,7 +12,9 @@ module.exports = {
     getToken: async(ctx, next) => {
         const res = await axios.get(`https://api.ikcamp.cn/login/errcode/check/${ctx.query.code}`);
         ctx.response.body = res.data;
-        ctx.cookies.set('token','12345');
+        if(res.data.data){
+            ctx.cookies.set('token',res.data.data.sessionKey);
+        }
     },
     checkAuth: async(ctx, next) => {
         let _token = ctx.cookies.get('token');
