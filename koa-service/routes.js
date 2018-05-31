@@ -23,7 +23,7 @@ router.get('/login', async (context, next) => {
 })
 
 router.put('/user', auth, async (context, next) => {
-  await account.update(this.state.userId, context.request.body)
+  await account.update(context.state.userId, context.request.body)
   await next()
 }, responseOK)
 
