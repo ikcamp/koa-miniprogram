@@ -3,9 +3,9 @@ const {
 } = require('./model')
 
 module.exports = {
-  async add (openId, name) {
+  async add (userId, name) {
     return Album.create({
-      openId,
+      userId,
       name
     })
   },
@@ -21,15 +21,15 @@ module.exports = {
       name: name
     })
   },
-  async getAlbums (openId, pageIndex, pageSize) {
+  async getAlbums (userId, pageIndex, pageSize) {
     let result
     if (pageSize) {
       result = await Album.find({
-        openId
+        userId
       }).skip((pageIndex - 1) * pageSize).limit(pageSize)
     } else {
       result = await Album.find({
-        openId
+        userId
       }).sort({
         'updated': -1
       })
