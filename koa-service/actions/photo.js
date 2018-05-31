@@ -7,6 +7,19 @@ module.exports = {
   async getApprovingPhotos (pageIndex, pageSize) {
     return photo.getApprovingPhotos(pageIndex, pageSize)
   },
+  async getPhotosByApproveState (type, pageIndex, pageSize) {
+    switch (type) {
+      case 'pending':
+        return photo.getApprovingPhotos(pageIndex, pageSize)
+      case 'accepted':
+        return photo.getApprovedPhotos(pageIndex, pageSize)
+      case 'reject':
+        return photo.getUnApprovedPhotos(pageIndex, pageSize)
+    }
+  },
+  async getAll (pageIndex, pageSize) {
+    return photo.getAll(pageIndex, pageSize)
+  },
   async approve (id) {
     return photo.approve()
   },
@@ -32,7 +45,7 @@ module.exports = {
       return Object.assign({
         photoCount: ps.length,
         fm: ps[0] ? ps[0].url : null
-      }, item)
+      }, item.toObject())
     }))
     return result
   },

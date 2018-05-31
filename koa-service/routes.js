@@ -140,7 +140,6 @@ const storage = multer.diskStorage({
 const uplader = multer({
   storage: storage
 })
-
 router.post('/photo', auth, uplader.single('file'), async (context, next) => {
   const {
     file
@@ -164,12 +163,27 @@ router.delete('/photo/:id', auth, async (context, next) => {
   await next()
 }, responseOK)
 
-router.get('/admin/photo/aprove', auth, async (context, next) => {
+router.get('/admin/photo/:type', auth, async (context, next) => {
   if (context.state.user.isAdmin) {
-    const photos = await photo.getApprovingPhotos(context.query.pageIndex || 1, context.query.pageSize || 10)
+    const pageIndex = context.query.pageIndex || 1
+    const pageSize = context.query.pageSize || 10
+    const photos = await photo.getPhotosByApproveState(context.params.type, pageIndex, pageSize)
     context.body = {
       status: 0,
       data: photos
+    }
+  } else {
+    context.throw(403, '该用户无权限')
+  }
+})
+
+router.get('/admin/photo', auth, async (context, next) => {
+  if (context.state.user.isAdmin) {
+    const pageIndex = context.query.pageIndex || 1
+    const pageSize = context.query.pageSize || 10
+    context.body = {
+      status: 0,
+      data: await photo.getAll(pageIndex, pageSize)
     }
   } else {
     context.throw(403, '该用户无权限')

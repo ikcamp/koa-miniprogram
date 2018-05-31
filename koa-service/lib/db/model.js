@@ -46,7 +46,7 @@ const photoSchema = new mongoose.Schema({
   },
   isApproved: {
     type: Boolean,
-    default: false,
+    default: null,
     index: true
   },
   albumId: {

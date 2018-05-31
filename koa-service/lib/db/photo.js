@@ -69,6 +69,23 @@ module.exports = {
   },
   async getApprovingPhotos (pageIndex, pageSize) {
     return Phopto.find({
+      isApproved: null,
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getAll (pageIndex, pageSize) {
+    return Phopto.find({
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getApprovedPhotos (pageIndex, pageSize) {
+    return Phopto.find({
+      isApproved: true,
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getUnApprovedPhotos (pageIndex, pageSize) {
+    return Phopto.find({
       isApproved: false,
       isDelete: false
     }).skip((pageIndex - 1) * pageSize).limit(pageSize)
