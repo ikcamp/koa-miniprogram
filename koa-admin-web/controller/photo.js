@@ -23,7 +23,7 @@ module.exports = {
                 break;
         }
         // 调专家接口拿数据
-        let res = await axios.get('');
+        //let res = await axios.get('');
         await ctx.render('home/photos',{
             menu:model.getMenu(),
             activeMenu: 0,
