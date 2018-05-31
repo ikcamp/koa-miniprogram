@@ -57,15 +57,15 @@
 .pics {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  padding: 0 20rpx;
+  justify-content: 236rpx;
+  align-items: center;
+  padding: 0 10rpx;
 }
 
 .pic {
-  width: 240rpx;
-  height: 240rpx;
+  width: 230rpx;
+  height: 230rpx;
   display: block;
-  margin-right: 15rpx;
-  margin-bottom: 15rpx;
+  margin: 9rpx;
   box-shadow: 0 2rpx 8rpx gray;
 }
