@@ -11,9 +11,9 @@ module.exports = async function (context, next) {
     context.state.user = {
       id: user._id,
       name: user.name,
-      avatar: user.avatar
+      avatar: user.avatar,
+      isAdmin: user.userType === 1
     }
-    context.state.isAdmin = user.userType === 1
   } else {
     context.throw(401, 'session 过期')
   }
