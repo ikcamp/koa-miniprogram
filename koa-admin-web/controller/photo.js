@@ -1,4 +1,5 @@
 const model = require('../model/home.js');
+const axios = require('axios');
 
 module.exports = {
     
@@ -9,19 +10,20 @@ module.exports = {
         let style = ctx.request.querystring ? ctx.request.query.style : 3;
 
         switch(ctx.url){
-            case '/photos/pending':
+            case '/photos/pending':   // 未审核
                 status = null;
                 break;
-            case '/photos/accepted':
+            case '/photos/accepted':  // 已通过
                 status = true;
                 break;
-            case '/photos/rejected':
+            case '/photos/rejected':  // 未通过
                 status = false;
                 break;
-            default:
+            default:                  // 全部
                 break;
         }
         // 调专家接口拿数据
+        //let res = await axios.get('');
         await ctx.render('home/photos',{
             menu:model.getMenu(),
             activeMenu: 0,

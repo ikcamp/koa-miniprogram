@@ -6,7 +6,11 @@ const userController = require('./controller/user');
 
 module.exports = (app) => {
     // 获取登陆页面
-    router.get('/login',loginController.login);
+    router.get('/login',loginController.index);
+    router.get('/qrcode',loginController.getQrcode);
+    router.get('/token',loginController.getToken);
+    router.get('/check',loginController.checkAuth);
+    
     // 获取照片列表
     router.get('/photos',photoController.getPhotos);
     router.get('/photos/:page',photoController.getPhotos);

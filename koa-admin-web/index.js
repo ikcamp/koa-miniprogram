@@ -6,7 +6,6 @@ const nunjucks = require('koa-nunjucks-2');
 const path = require('path');
 const static = require('koa-static');
 
-
 app.use(static(path.resolve(__dirname, "./public")))
 
 app.use(nunjucks({

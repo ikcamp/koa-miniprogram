@@ -6,14 +6,16 @@ let page = {
     checkbox: document.getElementsByClassName('j-identity'),
     card: document.getElementsByClassName('j-card'),
     maniBtn: document.getElementsByClassName('j-mani-btn'),
-    checkboxInput: document.getElementsByClassName('j-option')
+    checkboxInput: document.getElementsByClassName('j-option'),
+    selectAll: document.getElementById('j_select_all')
 }
 
 window.onload = function () {
+    
     // 绑定事件：点击多选
     page.selectBtn.addEventListener('click',function(){
-        if(!hasClass(this, 'multi-select-active')){
-            addClass(this, 'multi-select-active');
+        if(!hasClass(this, 'active')){
+            addClass(this, 'active');
             addClass(page.approBtn, 'approve-btn-display');
             [].forEach.call(page.covers, function(item, i){
                 addClass(item, 'cover-display');
@@ -22,7 +24,7 @@ window.onload = function () {
                 addClass(item, 'change-status-display');
             });
         } else {
-            removeClass(this, 'multi-select-active');
+            removeClass(this, 'active');
             removeClass(page.approBtn, 'approve-btn-display');
             [].forEach.call(page.covers, function(item, i){
                 removeClass(item, 'cover-display');
@@ -57,7 +59,7 @@ window.onload = function () {
         item.addEventListener('click', function(){
             let type = parseInt(this.children[0].dataset.id);
             let data = [];
-            if(hasClass(page.selectBtn, 'multi-select-active')){
+            if(hasClass(page.selectBtn, 'active')){
                 let _check = document.getElementsByClassName('check-green');
                 let _input = [].filter.call(page.checkboxInput, function(item){
                     return item.checked;
@@ -69,7 +71,24 @@ window.onload = function () {
             } else {
                 data.push(parseInt(item.parentNode.parentNode.dataset.id));
             }
+            console.log(data, type)
             send('POST', {data: data, type: type}, '/' + window.location.pathname.split('/')[1]);
+            window.location.reload();
         })
+    })
+
+    // 全选/取消
+    page.selectAll.addEventListener('click',function(){
+        if(!hasClass(this, 'active')){
+            addClass(this, 'active');
+            [].forEach.call(page.checks, function(item, i){
+                item.className.baseVal += ' ' + 'check-green';
+            });
+        } else {
+            removeClass(this, 'active');
+            [].forEach.call(page.checks, function(item, i){
+                item.className.baseVal = item.className.baseVal.replace( new RegExp( '(\\s|^)check-green(\\s|$)' ),'' );
+            });
+        }
     })
 }

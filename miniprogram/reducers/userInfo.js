@@ -1,16 +1,10 @@
 const INITIAL_STATE = {
-    datas: null
+  data: null
+}
+const User = (state = INITIAL_STATE, action) => {
+  switch (action.type) {
+    case "MODIFY_USER": return { state, ...action.data }
+    default:   return state
   }
-  const User = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-      case "MODIFY_USER": {
-        let { datas } = action
-        return Object.assign({}, state, { datas })
-      }
-      default: {
-        return state
-      }
-    }
-  }
-  export default User
-  
+}
+export default User

@@ -1,15 +1,10 @@
 const INITIAL_STATE = {
-  datas: []
+  data: []
 }
 const Pics = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case "MODIFY_PICS": {
-      let { datas } = action
-      return Object.assign({}, state, { datas })
-    }
-    default: {
-      return state
-    }
+    case "MODIFY_PICS": return { state, ...action.data }
+    default: return state
   }
 }
 export default Pics

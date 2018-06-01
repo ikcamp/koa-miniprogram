@@ -3,9 +3,9 @@ const {
 } = require('./model')
 
 module.exports = {
-  async add (openId, url, albumId) {
+  async add (userId, url, albumId) {
     let _photo = await Phopto.create({
-      openId,
+      userId,
       url,
       albumId
     })
@@ -25,11 +25,11 @@ module.exports = {
       isDelete: true
     })
   },
-  async getPhotos (openId, albumId, pageIndex, pageSize) {
+  async getPhotos (userId, albumId, pageIndex, pageSize) {
     let result
     if (pageSize) {
       result = await Phopto.find({
-        openId,
+        userId,
         albumId,
         isApproved: true,
         isDelete: false
@@ -38,7 +38,7 @@ module.exports = {
       }).skip((pageIndex - 1) * pageSize).limit(pageSize)
     } else {
       result = result = await Phopto.find({
-        openId,
+        userId,
         albumId,
         isApproved: true,
         isDelete: false
@@ -68,6 +68,23 @@ module.exports = {
     return result
   },
   async getApprovingPhotos (pageIndex, pageSize) {
+    return Phopto.find({
+      isApproved: null,
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getAll (pageIndex, pageSize) {
+    return Phopto.find({
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getApprovedPhotos (pageIndex, pageSize) {
+    return Phopto.find({
+      isApproved: true,
+      isDelete: false
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getUnApprovedPhotos (pageIndex, pageSize) {
     return Phopto.find({
       isApproved: false,
       isDelete: false
