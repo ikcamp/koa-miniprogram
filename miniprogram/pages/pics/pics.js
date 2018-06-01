@@ -16,8 +16,15 @@ Page(connect(mapStateToProps)({
     this.getPics()
   },
   getPics() {
+
+    wx.showLoading({ title: 'loading...', mask: true })
+
     SERVER.getPics().then(res => {
       this.setData({ pics: res.data.data })
+      wx.hideLoading()
+    }).catch(e => {
+      wx.hideLoading()
+      console.log(e)
     })
   },
   create() {
