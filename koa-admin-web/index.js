@@ -17,5 +17,20 @@ app.use(nunjucks({
 }))
 
 app.use(bodyParser());
+
+// 鉴权中间件
+app.use(async(ctx, next) => {
+    let identity = ctx.cookies.get('isAdmin');
+    let whiteList = ['/login', '/qrcode', '/token', '/check'];
+    let _match = whiteList.filter(function(item){
+        return item === ctx.request.path;
+    })
+    if(_match.length === 0 && !identity){
+        ctx.status = 302;
+        ctx.redirect('/login');
+    } else {
+        await next();
+    }
+});
 router(app);
 app.listen(3000);

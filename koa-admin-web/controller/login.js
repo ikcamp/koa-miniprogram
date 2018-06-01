@@ -24,5 +24,14 @@ module.exports = {
             }
         });
         ctx.response.body = res.data;
+        if(res.data.data){
+            ctx.cookies.set('isAdmin',res.data.data.isAdmin);
+        }
+    },
+    logout: async(ctx, next) => {
+        ctx.cookies.set('token','');
+        ctx.cookies.set('isAdmin','');
+        ctx.status = 302;
+        ctx.redirect('/login');
     }
 }
