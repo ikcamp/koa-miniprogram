@@ -22,14 +22,21 @@ router.get('/login', async (context, next) => {
   }
 })
 
-router.get('/updateUserName', auth, async (context, next) => {
-  const {
-    name
-  } = context.query
-  const sessionKey = context.get('x-session') || context.cookies.get('session_id')
-  await account.updateUserName(sessionKey, name)
+router.put('/user', auth, async (context, next) => {
+  await account.update(context.state.user.id, context.request.body)
   await next()
 }, responseOK)
+
+router.get('/my', auth, async (context, next) => {
+  if (context.state.user.id) {
+    context.body = {
+      status: 0,
+      data: context.state.user
+    }
+  } else {
+    context.throw(401, '当前用户未登录')
+  }
+})
 
 router.get('/login/ercode', async (context, next) => {
   context.body = {
@@ -38,9 +45,9 @@ router.get('/login/ercode', async (context, next) => {
   }
 })
 
-router.put('/login/ercode/:code', auth, async (context, next) => {
+router.get('/login/ercode/:code', auth, async (context, next) => {
   const code = context.params.code
-  const sessionKey = context.body.sessionKey
+  const sessionKey = context.get('x-session')
   await account.setSessionKeyForCode(code, sessionKey)
   await next()
 }, responseOK)
@@ -51,15 +58,20 @@ router.get('/login/errcode/check/:code', async (context, next) => {
     const code = context.params.code
     const sessionKey = await account.getSessionKeyByCode(code)
     if (sessionKey) {
-      context.cookies.set('session_id', sessionKey, {
-        httpOnly: true
-      })
       context.body = {
-        status: 0
+        status: 0,
+        data: {
+          sessionKey: sessionKey
+        }
       }
     } else {
       if (Date.now() - startTime < 10000) {
-        process.nextTick(login)
+        await new Promise((resolve) => {
+          process.nextTick(() => {
+            resolve()
+          })
+        })
+        await login()
       } else {
         context.body = {
           status: -1
@@ -71,28 +83,28 @@ router.get('/login/errcode/check/:code', async (context, next) => {
 })
 
 router.get('/album', auth, async (context, next) => {
-  const albums = await photo.getAlbums(context.state.openId, context.query.pageIndex || 1, context.query.pageSize || 10)
+  const albums = await photo.getAlbums(context.state.user.id, context.query.pageIndex || 1, context.query.pageSize || 10)
   context.body = {
     data: albums,
     status: 0
   }
 })
 router.get('/xcx/album', auth, async (context, next) => {
-  const albums = await photo.getAlbums(context.state.openId)
+  const albums = await photo.getAlbums(context.state.user.id)
   context.body = {
     data: albums,
     status: 0
   }
 })
 router.get('/album/:id', auth, async (context, next) => {
-  const photos = await photo.getPhotos(context.state.openId, context.params.id, context.query.pageIndex || 1, context.query.pageSize || 10)
+  const photos = await photo.getPhotos(context.state.user.id, context.params.id, context.query.pageIndex || 1, context.query.pageSize || 10)
   context.body = {
     status: 0,
     data: photos
   }
 })
 router.get('/xcx/album/:id', auth, async (context, next) => {
-  const photos = await photo.getPhotos(context.state.openId, context.params.id)
+  const photos = await photo.getPhotos(context.state.user.id, context.params.id)
   context.body = {
     status: 0,
     data: photos
@@ -103,7 +115,7 @@ router.post('/album', auth, async (context, next) => {
   const {
     name
   } = context.request.body
-  await photo.addAlbum(context.state.openId, name)
+  await photo.addAlbum(context.state.user.id, name)
   await next()
 }, responseOK)
 
@@ -128,7 +140,6 @@ const storage = multer.diskStorage({
 const uplader = multer({
   storage: storage
 })
-
 router.post('/photo', auth, uplader.single('file'), async (context, next) => {
   const {
     file
@@ -136,14 +147,14 @@ router.post('/photo', auth, uplader.single('file'), async (context, next) => {
   const {
     id
   } = context.req.body
-  await photo.add(context.state.openId, file.filename, id)
+  await photo.add(context.state.user.id, `//static.ikcamp.cn/${file.filename}`, id)
   await next()
 }, responseOK)
 
 router.delete('/photo/:id', auth, async (context, next) => {
   const p = await photo.getPhotoById(context.params.id)
   if (p) {
-    if (p.openId === context.state.openId || context.state.isAdmin) {
+    if (p.userId === context.state.user.id || context.state.user.isAdmin) {
       await photo.delete(context.params.id)
     } else {
       context.throw(403, '该用户无权限')
@@ -152,9 +163,11 @@ router.delete('/photo/:id', auth, async (context, next) => {
   await next()
 }, responseOK)
 
-router.get('/admin/photo/aprove', auth, async (context, next) => {
-  if (context.state.isAdmin) {
-    const photos = await photo.getApprovingPhotos(context.query.pageIndex || 1, context.query.pageSize || 10)
+router.get('/admin/photo/:type', auth, async (context, next) => {
+  if (context.state.user.isAdmin) {
+    const pageIndex = context.query.pageIndex || 1
+    const pageSize = context.query.pageSize || 10
+    const photos = await photo.getPhotosByApproveState(context.params.type, pageIndex, pageSize)
     context.body = {
       status: 0,
       data: photos
@@ -164,8 +177,21 @@ router.get('/admin/photo/aprove', auth, async (context, next) => {
   }
 })
 
+router.get('/admin/photo', auth, async (context, next) => {
+  if (context.state.user.isAdmin) {
+    const pageIndex = context.query.pageIndex || 1
+    const pageSize = context.query.pageSize || 10
+    context.body = {
+      status: 0,
+      data: await photo.getAll(pageIndex, pageSize)
+    }
+  } else {
+    context.throw(403, '该用户无权限')
+  }
+})
+
 router.put('/admin/photo/approve/:id', auth, async (context, next) => {
-  if (context.state.isAdmin) {
+  if (context.state.user.isAdmin) {
     await photo.approve(context.params.id)
   } else {
     context.throw(403, '该用户无权限')

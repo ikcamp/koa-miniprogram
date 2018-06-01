@@ -1,6 +1,6 @@
 const {
   login,
-  updateName,
+  update,
   updateUserType,
   getUsers
 } = require('../lib/db/user')
@@ -26,8 +26,8 @@ module.exports = {
       throw new Error('登陆失败')
     }
   },
-  async updateUserName (sessionKey, name) {
-    return updateName(name, sessionKey)
+  async update (id, data) {
+    return update(id, data)
   },
   async setUserType (id, userType) {
     return updateUserType(id, userType)
@@ -38,19 +38,24 @@ module.exports = {
   async getErCode () {
     const code = encodeErCode()
     await add(code)
+    setTimeout(() => {
+      removeData(code)
+    }, 30000)
     return code
   },
   async setSessionKeyForCode (code, sessionKey) {
     const {timespan} = decode(code)
     // 30s 过期
     if (Date.now() - timespan > 30000) {
-      throw new Error('ercode timeout')
+      throw new Error('time out')
     }
     await updateSessionKey(code, sessionKey)
   },
   async getSessionKeyByCode (code) {
     const sessionKey = await getSessionKey(code)
-    await removeData(code)
+    if (sessionKey) {
+      await removeData(code)
+    }
     return sessionKey
   }
 }

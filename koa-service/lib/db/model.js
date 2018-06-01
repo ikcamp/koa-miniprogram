@@ -17,13 +17,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     index: true
   },
+  avatar: {
+    type: String
+  },
   userType: {
     type: Number
   }
 })
 
 const albumSchema = new mongoose.Schema({
-  openId: {
+  userId: {
     type: String
   },
   name: {
@@ -35,7 +38,7 @@ const albumSchema = new mongoose.Schema({
 })
 
 const photoSchema = new mongoose.Schema({
-  openId: {
+  userId: {
     type: String
   },
   url: {
@@ -43,7 +46,7 @@ const photoSchema = new mongoose.Schema({
   },
   isApproved: {
     type: Boolean,
-    default: false,
+    default: null,
     index: true
   },
   albumId: {

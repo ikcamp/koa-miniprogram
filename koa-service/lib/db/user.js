@@ -52,12 +52,10 @@ module.exports = {
     }
     return null
   },
-  async updateName (name, sessionKey) {
+  async update (id, data) {
     return User.update({
-      sessionKey: sessionKey
-    }, {
-      name: name
-    })
+      _id: id
+    }, data)
   },
   async updateUserType (id, type) {
     return User.update({

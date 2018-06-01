@@ -24,10 +24,14 @@
   background: #f5f5f5;
   color: #0bb9f1;
   font-size: 28rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .item-name {
-  color: #000000;
+  color: #000;
   font-size: 32rpx;
   line-height: 64rpx;
   text-overflow: ellipsis;
@@ -47,6 +51,4 @@
 .item-ico {
   color: #05b9ff;
   font-size: 140rpx;
-  line-height: 1;
-  padding-top: 60rpx;
 }
