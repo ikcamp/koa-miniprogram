@@ -68,16 +68,22 @@ Page({
       sourceType: ['album', 'camera']
     }).then(res => {
 
+      wx.showLoading({ title: '上传中...', mask: true })
+
       SERVER.addPic({
         filePath: res.tempFilePaths[0],
         name: 'file',
         formData: { id: this.data.id }
       }).then(res => {
 
+        wx.hideLoading()
         wx.showToast({ title: '照片上传成功，请到后台管理系统中审核。', icon: 'none', duration: 2000 })
 
         this.getPic()
         this.updatePics()
+      }).catch(e => {
+        wx.hideLoading()
+        console.log(e)
       })
     })
   },
