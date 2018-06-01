@@ -1,11 +1,24 @@
 const photo = require('../lib/db/photo')
 const album = require('../lib/db/album')
 module.exports = {
-  async getPhotos (openId, albumId, pageIndex, pageSize) {
-    return photo.getPhotos(openId, albumId, pageIndex, pageSize)
+  async getPhotos (userId, albumId, pageIndex, pageSize) {
+    return photo.getPhotos(userId, albumId, pageIndex, pageSize)
   },
   async getApprovingPhotos (pageIndex, pageSize) {
     return photo.getApprovingPhotos(pageIndex, pageSize)
+  },
+  async getPhotosByApproveState (type, pageIndex, pageSize) {
+    switch (type) {
+      case 'pending':
+        return photo.getApprovingPhotos(pageIndex, pageSize)
+      case 'accepted':
+        return photo.getApprovedPhotos(pageIndex, pageSize)
+      case 'reject':
+        return photo.getUnApprovedPhotos(pageIndex, pageSize)
+    }
+  },
+  async getAll (pageIndex, pageSize) {
+    return photo.getAll(pageIndex, pageSize)
   },
   async approve (id) {
     return photo.approve()
@@ -13,31 +26,31 @@ module.exports = {
   async delete (id) {
     return photo.delete(id)
   },
-  async add (openId, url, albumId) {
-    return photo.add(openId, url, albumId)
+  async add (userId, url, albumId) {
+    return photo.add(userId, url, albumId)
   },
   async getPhotoById (id) {
     return photo.getPhotoById(id)
   },
-  async getAlbums (openId, pageIndex, pageSize) {
+  async getAlbums (userId, pageIndex, pageSize) {
     let albums
-    if(pageSize){
-      albums = await album.getAlbums(openId, pageIndex, pageSize)
-    }else{
-      albums = await album.getAlbums(openId)
+    if (pageSize) {
+      albums = await album.getAlbums(userId, pageIndex, pageSize)
+    } else {
+      albums = await album.getAlbums(userId)
     }
-    let result = await Promise.all(albums.map(async function(item){
+    let result = await Promise.all(albums.map(async function (item) {
       const id = item._id
       let ps = await photo.getPhotosByAlbumId(id)
       return Object.assign({
         photoCount: ps.length,
-        fm: ps[0] && ps[0].url || null
-      }, item)
+        fm: ps[0] ? ps[0].url : null
+      }, item.toObject())
     }))
     return result
   },
-  async addAlbum (openId, name) {
-    return album.add(openId, name)
+  async addAlbum (userId, name) {
+    return album.add(userId, name)
   },
   async updateAlbum (id, name) {
     return album.update(id, name)
