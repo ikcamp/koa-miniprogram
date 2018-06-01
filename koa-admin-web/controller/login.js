@@ -4,6 +4,8 @@ const axios = require('axios');
 module.exports = {
     index: async(ctx, next) => {
         await ctx.render('login/login');
+        ctx.cookies.set('token','');
+        ctx.cookies.set('isAdmin','');
     },
     getQrcode: async(ctx, next) => {
         const res = await axios.get('https://api.ikcamp.cn/login/ercode');
@@ -24,5 +26,8 @@ module.exports = {
             }
         });
         ctx.response.body = res.data;
+        if(res.data.data){
+            ctx.cookies.set('isAdmin',res.data.data.isAdmin);
+        }
     }
 }
