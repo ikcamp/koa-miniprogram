@@ -147,7 +147,7 @@ router.post('/photo', auth, uplader.single('file'), async (context, next) => {
   const {
     id
   } = context.req.body
-  await photo.add(context.state.user.id, `//static.ikcamp.cn/${file.filename}`, id)
+  await photo.add(context.state.user.id, `https://static.ikcamp.cn/${file.filename}`, id)
   await next()
 }, responseOK)
 
