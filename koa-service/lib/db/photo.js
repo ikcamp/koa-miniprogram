@@ -11,11 +11,11 @@ module.exports = {
     })
     return _photo
   },
-  async approve (id) {
+  async approve (id, state) {
     return Phopto.update({
       _id: id
     }, {
-      isApproved: true
+      isApproved: state || true
     })
   },
   async delete (id) {

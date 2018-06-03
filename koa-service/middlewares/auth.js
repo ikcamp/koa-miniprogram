@@ -8,6 +8,9 @@ module.exports = async function (context, next) {
   }
   const user = await findBySessionKey(sessionKey)
   if (user) {
+    if (user.userType === -1) {
+      context.throw(401, '当前用户被禁用')
+    }
     context.state.user = {
       id: user._id,
       name: user.name,

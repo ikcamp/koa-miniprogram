@@ -20,8 +20,8 @@ module.exports = {
   async getAll (pageIndex, pageSize) {
     return photo.getAll(pageIndex, pageSize)
   },
-  async approve (id) {
-    return photo.approve()
+  async approve (id, state) {
+    return photo.approve(id, state)
   },
   async delete (id) {
     return photo.delete(id)
