@@ -2,7 +2,8 @@ const {
   login,
   update,
   updateUserType,
-  getUsers
+  getUsers,
+  getUsersCount
 } = require('../lib/db/user')
 const {
   add, updateSessionKey, getSessionKey, removeData
@@ -33,7 +34,11 @@ module.exports = {
     return updateUserType(id, userType)
   },
   async getUsers (pageIndex, pageSize) {
-    return getUsers(pageIndex, pageSize)
+    const [count, users] = await Promise.all([getUsersCount(), getusers(pageIndex, pageSize)])
+    return {
+      count,
+      data: users
+    }
   },
   async getErCode () {
     const code = encodeErCode()

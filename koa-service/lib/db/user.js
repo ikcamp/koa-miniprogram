@@ -79,5 +79,8 @@ module.exports = {
   },
   async getUsers (pageIndex, pageSize) {
     return User.find().skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getUsersCount () {
+    return User.count()
   }
 }

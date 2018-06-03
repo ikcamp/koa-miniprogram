@@ -35,5 +35,10 @@ module.exports = {
       })
     }
     return result
+  },
+  async getAlbumsCount (userId) {
+    return Album.count({
+      userId
+    })
   }
 }
