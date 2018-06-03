@@ -7,6 +7,13 @@ const uuid = require('uuid')
 const multer = require('koa-multer')
 const path = require('path')
 
+function getPageParams (context) {
+  return {
+    pageIndex: parseInt(context.query.pageIndex) || 1,
+    pageSize: parseInt(context.query.pageSize) || 10
+  }
+}
+
 async function responseOK (ctx, next) {
   ctx.body = {
     status: 0
@@ -102,7 +109,8 @@ router.get('/login/errcode/check/:code', async (context, next) => {
  * 获取相册列表
  */
 router.get('/album', auth, async (context, next) => {
-  const albums = await photo.getAlbums(context.state.user.id, context.query.pageIndex || 1, context.query.pageSize || 10)
+  const pageParams = getPageParams(context)
+  const albums = await photo.getAlbums(context.state.user.id, pageParams.pageIndex, pageParams.pageSize)
   context.body = {
     data: albums,
     status: 0
@@ -122,7 +130,8 @@ router.get('/xcx/album', auth, async (context, next) => {
  * 获取某个相册的相片列表
  */
 router.get('/album/:id', auth, async (context, next) => {
-  const photos = await photo.getPhotos(context.state.user.id, context.params.id, context.query.pageIndex || 1, context.query.pageSize || 10)
+  const pageParams = getPageParams(context)
+  const photos = await photo.getPhotos(context.state.user.id, context.params.id, pageParams.pageIndex, pageParams.pageSize)
   context.body = {
     status: 0,
     data: photos
@@ -209,9 +218,8 @@ router.delete('/photo/:id', auth, async (context, next) => {
  */
 router.get('/admin/photo/:type', auth, async (context, next) => {
   if (context.state.user.isAdmin) {
-    const pageIndex = context.query.pageIndex || 1
-    const pageSize = context.query.pageSize || 10
-    const photos = await photo.getPhotosByApproveState(context.params.type, pageIndex, pageSize)
+    const pageParams = getPageParams(context)
+    const photos = await photo.getPhotosByApproveState(context.params.type, pageParams.pageIndex, pageParams.pageSize)
     context.body = {
       status: 0,
       data: photos
@@ -226,11 +234,10 @@ router.get('/admin/photo/:type', auth, async (context, next) => {
  */
 router.get('/admin/photo', auth, async (context, next) => {
   if (context.state.user.isAdmin) {
-    const pageIndex = context.query.pageIndex || 1
-    const pageSize = context.query.pageSize || 10
+    const pageParams = getPageParams(context)
     context.body = {
       status: 0,
-      data: await photo.getAll(pageIndex, pageSize)
+      data: await photo.getAll(pageParams.pageIndex, pageParams.pageSize)
     }
   } else {
     context.throw(403, '该用户无权限')
@@ -252,9 +259,10 @@ router.put('/admin/photo/approve/:id/:state', auth, async (context, next) => {
  * 获取用户列表
  */
 router.get('/admin/user', async (context, next) => {
+  const pageParams = getPageParams(context)
   context.body = {
     status: 0,
-    data: await account.getUsers(context.query.pageIndex || 1, context.query.pageSize || 10)
+    data: await account.getUsers(pageParams.pageIndex, pageParams.pageSize)
   }
   await next()
 })
