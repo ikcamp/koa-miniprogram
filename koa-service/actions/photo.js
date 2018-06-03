@@ -2,7 +2,7 @@ const photo = require('../lib/db/photo')
 const album = require('../lib/db/album')
 module.exports = {
   async getPhotos (userId, albumId, pageIndex, pageSize) {
-    const [count, photos] = await Promise.all([photo.getPhotosCount(userId, albumId), this.getPhotos(userId, albumId, pageIndex, pageSize)])
+    const [count, photos] = await Promise.all([photo.getPhotosCount(userId, albumId), photo.getPhotos(userId, albumId, pageIndex, pageSize)])
     return {
       count, 
       data: photos
