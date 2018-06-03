@@ -110,7 +110,7 @@ module.exports = {
       isDelete: false
     }).skip((pageIndex - 1) * pageSize).limit(pageSize)
   },
-  async getApprovedPhotos () {
+  async getApprovedPhotosCount () {
     return Phopto.count({
       isApproved: true,
       isDelete: false

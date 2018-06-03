@@ -24,7 +24,7 @@ module.exports = {
           data: photos
         }
       case 'accepted':
-        const [count, photos] = await Promise.all([photo.getUnApprovedPhotosCount(), photo.getApprovedPhotos(pageIndex, pageSize)])
+        const [count, photos] = await Promise.all([photo.getApprovedPhotosCount(), photo.getApprovedPhotos(pageIndex, pageSize)])
         return {
           count,
           data: photos
