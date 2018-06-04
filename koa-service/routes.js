@@ -235,7 +235,7 @@ router.get('/admin/photo/:type', auth, async (context, next) => {
  */
 router.put('/admin/photo/approve/:id/:state', auth, async (context, next) => {
   if (context.state.user.isAdmin) {
-    await photo.approve(context.params.id, this.params.state)
+    await photo.approve(context.params.id, context.params.state)
   } else {
     context.throw(403, '该用户无权限')
   }
