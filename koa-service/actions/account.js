@@ -34,7 +34,7 @@ module.exports = {
     return updateUserType(id, userType)
   },
   async getUsers (pageIndex, pageSize) {
-    const [count, users] = await Promise.all([getUsersCount(), getusers(pageIndex, pageSize)])
+    const [count, users] = await Promise.all([getUsersCount(), getUsers(pageIndex, pageSize)])
     return {
       count,
       data: users

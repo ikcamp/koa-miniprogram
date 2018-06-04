@@ -4,7 +4,7 @@ module.exports = {
   async getPhotos (userId, albumId, pageIndex, pageSize) {
     const [count, photos] = await Promise.all([photo.getPhotosCount(userId, albumId), photo.getPhotos(userId, albumId, pageIndex, pageSize)])
     return {
-      count, 
+      count,
       data: photos
     }
   },
@@ -15,33 +15,33 @@ module.exports = {
       data: photos
     }
   },
-  async getPhotosByApproveState (type, pageIndex, pageSize) {
+  async getPhotosByType (type, pageIndex, pageSize) {
+    let count, photos
     switch (type) {
       case 'pending':
-        const [count, photos] = await Promise.all([photo.getApprovingPhotosCount(), photo.getApprovingPhotos(pageIndex, pageSize)])
+        [count, photos] = await Promise.all([photo.getApprovingPhotosCount(), photo.getApprovingPhotos(pageIndex, pageSize)])
         return {
           count,
           data: photos
         }
       case 'accepted':
-        const [count, photos] = await Promise.all([photo.getApprovedPhotosCount(), photo.getApprovedPhotos(pageIndex, pageSize)])
+        [count, photos] = await Promise.all([photo.getApprovedPhotosCount(), photo.getApprovedPhotos(pageIndex, pageSize)])
         return {
           count,
           data: photos
         }
       case 'reject':
-        const [count, photos] = await Promise.all([photo.getUnApprovedPhotosCount(), photo.getUnApprovedPhotos(pageIndex, pageSize)])
+        [count, photos] = await Promise.all([photo.getUnApprovedPhotosCount(), photo.getUnApprovedPhotos(pageIndex, pageSize)])
         return {
           count,
           data: photos
         }
-    }
-  },
-  async getAll (pageIndex, pageSize) {
-    const [count, photos] = await Promise.all([photo.getAllCount(), photo.getAll(pageIndex, pageSize)])
-    return {
-      count, 
-      data: photos
+      case 'all':
+        [count, photos] = await Promise.all([photo.getAllCount(), photo.getAll(pageIndex, pageSize)])
+        return {
+          count,
+          data: photos
+        }
     }
   },
   async approve (id, state) {
