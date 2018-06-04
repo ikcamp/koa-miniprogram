@@ -214,7 +214,7 @@ router.delete('/photo/:id', auth, async (context, next) => {
  * 按照状态获取相片列表，type类型如下：
  * pending：待审核列表
  * accepted：审核通过列表
- * reject：审核未通过列表
+ * rejected：审核未通过列表
  * all: 获取所有列表
  */
 router.get('/admin/photo/:type', auth, async (context, next) => {
