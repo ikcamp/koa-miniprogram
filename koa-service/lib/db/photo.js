@@ -100,7 +100,7 @@ module.exports = {
     }).skip((pageIndex - 1) * pageSize).limit(pageSize)
   },
   async getAllCount () {
-    return Phopto.find({
+    return Phopto.count({
       isDelete: false
     })
   },
