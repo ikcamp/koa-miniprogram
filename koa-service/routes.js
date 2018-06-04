@@ -215,29 +215,15 @@ router.delete('/photo/:id', auth, async (context, next) => {
  * pending：待审核列表
  * accepted：审核通过列表
  * reject：审核未通过列表
+ * all: 获取所有列表
  */
 router.get('/admin/photo/:type', auth, async (context, next) => {
   if (context.state.user.isAdmin) {
     const pageParams = getPageParams(context)
-    const photos = await photo.getPhotosByApproveState(context.params.type, pageParams.pageIndex, pageParams.pageSize)
+    const photos = await photo.getPhotosByType(context.params.type, pageParams.pageIndex, pageParams.pageSize)
     context.body = {
       status: 0,
       data: photos
-    }
-  } else {
-    context.throw(403, '该用户无权限')
-  }
-})
-
-/**
- * 获取所有照片列表
- */
-router.get('/admin/photo', auth, async (context, next) => {
-  if (context.state.user.isAdmin) {
-    const pageParams = getPageParams(context)
-    context.body = {
-      status: 0,
-      data: await photo.getAll(pageParams.pageIndex, pageParams.pageSize)
     }
   } else {
     context.throw(403, '该用户无权限')
