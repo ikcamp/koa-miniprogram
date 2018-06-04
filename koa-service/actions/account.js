@@ -2,8 +2,11 @@ const {
   login,
   update,
   updateUserType,
+  getUsersByType,
+  getUsersCountByType,
   getUsers,
   getUsersCount
+
 } = require('../lib/db/user')
 const {
   add, updateSessionKey, getSessionKey, removeData
@@ -33,8 +36,24 @@ module.exports = {
   async setUserType (id, userType) {
     return updateUserType(id, userType)
   },
-  async getUsers (pageIndex, pageSize) {
-    const [count, users] = await Promise.all([getUsersCount(), getUsers(pageIndex, pageSize)])
+  async getUsersByType (type, pageIndex, pageSize) {
+    let userType, count, users
+    switch (type) {
+      case 'admin':
+        userType = 1
+        break
+      case 'blocked':
+        userType = -1
+        break
+      case 'ordinary':
+        userType = 0
+        break
+    }
+    if (userType !== undefined) {
+      [count, users] = await Promise.all([getUsersCountByType(userType), getUsersByType(userType, pageIndex, pageSize)])
+    } else {
+      [count, users] = await Promise.all([getUsersCount(), getUsers(pageIndex, pageSize)])
+    }
     return {
       count,
       data: users

@@ -243,12 +243,17 @@ router.put('/admin/photo/approve/:id/:state', auth, async (context, next) => {
 }, responseOK)
 /**
  * 获取用户列表
+ * type的值的类型为：
+ * admin: 管理员
+ * blocked: 禁用用户
+ * ordinary: 普通用户
+ * all: 全部用户
  */
-router.get('/admin/user', async (context, next) => {
+router.get('/admin/user/:type', async (context, next) => {
   const pageParams = getPageParams(context)
   context.body = {
     status: 0,
-    data: await account.getUsers(pageParams.pageIndex, pageParams.pageSize)
+    data: await account.getUsersByType(context.params.type, pageParams.pageIndex, pageParams.pageSize)
   }
   await next()
 })
