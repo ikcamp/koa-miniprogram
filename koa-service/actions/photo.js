@@ -30,7 +30,7 @@ module.exports = {
           count,
           data: photos
         }
-      case 'reject':
+      case 'rejected':
         [count, photos] = await Promise.all([photo.getUnApprovedPhotosCount(), photo.getUnApprovedPhotos(pageIndex, pageSize)])
         return {
           count,
