@@ -5,14 +5,14 @@ module.exports = {
 
     getUsers: async(ctx, next) => {
 
-        let status = ctx.params.type || 'all';
+        let status = ctx.params.status || 'all';
         let style = 0;
         let index = ctx.request.query.index >> 0 || 1;
 
         let data = await model.getUsers(ctx.state.token, index, PAGE_SIZE, status);
 
         await ctx.render('home/users', {
-            photos: data.data,
+            list: data.data,
             path: ctx.path,
             page: Math.ceil(data.count / PAGE_SIZE),
             index,

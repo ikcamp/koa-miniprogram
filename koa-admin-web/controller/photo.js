@@ -5,14 +5,14 @@ module.exports = {
 
     getPhotos: async (ctx, next) => {
 
-        let status = ctx.params.type || 'all';
+        let status = ctx.params.status || 'all';
         let style = ctx.request.query.style >> 0 || 3;
         let index = ctx.request.query.index >> 0 || 1;
 
         let data = await model.getPhotos(ctx.state.token, index, PAGE_SIZE, status);
 
         await ctx.render('home/photos', {
-            photos: data.data,
+            list: data.data,
             path: ctx.path,
             page: Math.ceil(data.count / PAGE_SIZE),
             index,

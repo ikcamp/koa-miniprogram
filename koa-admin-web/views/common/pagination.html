@@ -1,17 +1,17 @@
 {% macro pagination(page, index,path,style) %}
 <ul class="pagination pagination-sm justify-content-end">
     <li class="page-item">
-        <a class="page-link" href="{{path}}?index={{index - 1 if index > 1 else 1}}{{"&style="+style if style>0  else ""}}">
+        <a class="page-link" href="{{path}}?index={{index - 1 if index > 1 else 1}}{{"&style="+style if style>0}}">
             <span data-feather='chevrons-left'></span>
         </a>
     </li>
     {% for i in range(1, page + 1) %}
     <li class="page-item {{index}} {{'active' if loop.index === index}}">
-        <a class="page-link" href="{{path}}?index={{i}}{{"&style="+style if style>0  else ""}}">{{i}}</a>
+        <a class="page-link" href="{{path}}?index={{i}}{{"&style="+style if style>0}}">{{i}}</a>
     </li>
     {% endfor %}
     <li class="page-item">
-        <a class="page-link" href="{{path}}?index={{page if index === page else index + 1}}{{"&style="+style if style>0  else ""}}">
+        <a class="page-link" href="{{path}}?index={{page if index === page else index + 1}}{{"&style="+style if style>0}}">
             <span data-feather='chevrons-right'></span>
         </a>
     </li>

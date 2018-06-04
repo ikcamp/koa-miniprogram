@@ -1,5 +1,10 @@
-{% import "../common/pagination.html" as pagination %} {% set activeMenu = 0 %} {% extends './layout.html' %} {% block body
-%} {{ super() }}
+{% import "../common/pagination.html" as pagination %} 
+
+{% set activeMenu = 0 %} 
+{% extends './layout.html' %} 
+{% block body %} 
+{{ super() }}
+{% set STATUS = {all:"全部照片",pending:"未审核",accepted:"已通过",rejected:"未通过"}%}
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 main-container">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <div class="btn-toolbar mb-2 mb-md-0">
@@ -20,7 +25,7 @@
             <div class="input-group-prepend">
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
                     <span data-feather="list"></span>
-                    照片分类
+                    {{STATUS[status]}}
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="/photos/all?index={{index}}&style={{style}}">全部照片</a>
@@ -42,7 +47,7 @@
     </div>
     <div class="container">
         <div class="row">
-            {% for item in photos %}
+            {% for item in list %}
             <div class="col-md-{{style}} j-card">
                 <div class="card mb-4 box-shadow" data-id={{item.openId}}>
                     <img class="card-img-top {{'trans' if item.isApproved !== null else ''}}" src="{{item.url}}" data-holder-rendered="true">
@@ -74,9 +79,12 @@
                 </div>
             </div>
             {% endfor %}
+            {% if list.length===0 %}
+            <p>暂无数据</p>
+            {% endif %}
         </div>
     </div>
-    {{ pagination.pagination(page,index,path,style) }}
+    {{ pagination.pagination(page,index,path,style) if list.length>0 }}
 </main>
 <div class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 approve-btn" id="j_approve_group">
     <div class="btn-group mr-2">

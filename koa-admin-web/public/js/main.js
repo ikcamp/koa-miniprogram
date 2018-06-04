@@ -78,7 +78,7 @@ window.onload = function () {
     })
 
     // 全选/取消
-    page.selectAll.addEventListener('click',function(){
+    page.selectAll && page.selectAll.addEventListener('click',function(){
         if(!hasClass(this, 'active')){
             addClass(this, 'active');
             [].forEach.call(page.checks, function(item, i){
