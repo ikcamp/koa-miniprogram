@@ -2,26 +2,50 @@ const photo = require('../lib/db/photo')
 const album = require('../lib/db/album')
 module.exports = {
   async getPhotos (userId, albumId, pageIndex, pageSize) {
-    return photo.getPhotos(userId, albumId, pageIndex, pageSize)
-  },
-  async getApprovingPhotos (pageIndex, pageSize) {
-    return photo.getApprovingPhotos(pageIndex, pageSize)
-  },
-  async getPhotosByApproveState (type, pageIndex, pageSize) {
-    switch (type) {
-      case 'pending':
-        return photo.getApprovingPhotos(pageIndex, pageSize)
-      case 'accepted':
-        return photo.getApprovedPhotos(pageIndex, pageSize)
-      case 'reject':
-        return photo.getUnApprovedPhotos(pageIndex, pageSize)
+    const [count, photos] = await Promise.all([photo.getPhotosCount(userId, albumId), photo.getPhotos(userId, albumId, pageIndex, pageSize)])
+    return {
+      count,
+      data: photos
     }
   },
-  async getAll (pageIndex, pageSize) {
-    return photo.getAll(pageIndex, pageSize)
+  async getApprovingPhotos (pageIndex, pageSize) {
+    const [count, photos] = await Promise.all([photo.getApprovingPhotosCount(), photo.getApprovingPhotos(pageIndex, pageSize)])
+    return {
+      count,
+      data: photos
+    }
   },
-  async approve (id) {
-    return photo.approve()
+  async getPhotosByType (type, pageIndex, pageSize) {
+    let count, photos
+    switch (type) {
+      case 'pending':
+        [count, photos] = await Promise.all([photo.getApprovingPhotosCount(), photo.getApprovingPhotos(pageIndex, pageSize)])
+        return {
+          count,
+          data: photos
+        }
+      case 'accepted':
+        [count, photos] = await Promise.all([photo.getApprovedPhotosCount(), photo.getApprovedPhotos(pageIndex, pageSize)])
+        return {
+          count,
+          data: photos
+        }
+      case 'rejected':
+        [count, photos] = await Promise.all([photo.getUnApprovedPhotosCount(), photo.getUnApprovedPhotos(pageIndex, pageSize)])
+        return {
+          count,
+          data: photos
+        }
+      default:
+        [count, photos] = await Promise.all([photo.getAllCount(), photo.getAll(pageIndex, pageSize)])
+        return {
+          count,
+          data: photos
+        }
+    }
+  },
+  async approve (id, state) {
+    return photo.approve(id, state)
   },
   async delete (id) {
     return photo.delete(id)
@@ -33,9 +57,9 @@ module.exports = {
     return photo.getPhotoById(id)
   },
   async getAlbums (userId, pageIndex, pageSize) {
-    let albums
+    let albums, count
     if (pageSize) {
-      albums = await album.getAlbums(userId, pageIndex, pageSize)
+      [albums, count] = await Promise.all([album.getAlbumsCount(userId), album.getAlbums(userId, pageIndex, pageSize)])
     } else {
       albums = await album.getAlbums(userId)
     }
@@ -47,6 +71,12 @@ module.exports = {
         fm: ps[0] ? ps[0].url : null
       }, item.toObject())
     }))
+    if (count) {
+      return {
+        count,
+        data: result
+      }
+    }
     return result
   },
   async addAlbum (userId, name) {

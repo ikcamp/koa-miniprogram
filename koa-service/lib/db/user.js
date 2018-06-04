@@ -77,7 +77,20 @@ module.exports = {
     const user = await User.findById(id)
     return user.userType === -1
   },
+  async getUsersByType (type, pageIndex, pageSize) {
+    return User.find({
+      userType: type
+    }).skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getUsersCountByType (type) {
+    return User.count({
+      userType: type
+    })
+  },
   async getUsers (pageIndex, pageSize) {
     return User.find().skip((pageIndex - 1) * pageSize).limit(pageSize)
+  },
+  async getUsersCount () {
+    return User.count()
   }
 }

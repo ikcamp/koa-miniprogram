@@ -41,4 +41,6 @@ function count(num, callback){
             clearInterval(count);
         }
     },1000);
+
 }
+

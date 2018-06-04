@@ -7,7 +7,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#11b8f5",
-    "navigationBarTitleText": "iKcamp建议相册",
+    "navigationBarTitleText": "iKcamp简易相册",
     "navigationBarTextStyle": "#fff"
   },
   "tabBar": {
