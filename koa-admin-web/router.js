@@ -16,7 +16,7 @@ module.exports = (app) => {
     router.get('/photos/:status',photoController.getPhotos);
 
     // 操作照片
-    router.post('/photos/:id',photoController.editPhotos);
+    router.put('/photos/:id',photoController.updatePhotos);
     
     // 获取用户列表
     router.get('/users/:status',userController.getUsers);

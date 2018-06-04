@@ -1,4 +1,3 @@
-const model = require('../model/home.js');
 const axios = require('axios');
 const util = require('../utils/util');
 

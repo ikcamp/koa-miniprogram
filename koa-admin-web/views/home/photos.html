@@ -34,48 +34,36 @@
                     <a class="dropdown-item" href="/photos/rejected?index={{index}}&style={{style}}">未通过</a>
                 </div>
             </div>
-            <div class="info">
-                <span data-feather='layers'></span>&nbsp;&#58;&nbsp;设置为未审核
-            </div>
-            <div class="info">
-                <span data-feather='check-square'></span>&nbsp;&#58;&nbsp;通过
-            </div>
-            <div class="info">
-                <span data-feather='x-square'></span>&nbsp;&#58;&nbsp;不通过
-            </div>
         </div>
     </div>
     <div class="container">
         <div class="row">
             {% for item in list %}
             <div class="col-md-{{style}} j-card">
-                <div class="card mb-4 box-shadow" data-id={{item.openId}}>
+                <div class="card mb-4 box-shadow j-row" data-id={{item._id}}>
                     <img class="card-img-top {{'trans' if item.isApproved !== null else ''}}" src="{{item.url}}" data-holder-rendered="true">
-                    <div class="card-body card-center">
-                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny j-mani-btn">
-                            {% if item.isApproved === null %}
-                            <span data-feather='check-square' data-id='1'></span>
-                            {% else %}
-                            <span data-feather='layers' data-id='0'></span>
-                            {% endif %}
+                    <div class="card-body card-center j-mani-btn">
+                        {% if item.isApproved === null %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-approve='true' title="通过">
+                            <span data-feather='check-square'></span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny j-mani-btn">
-                            {% if item.isApproved === false %}
-                            <span data-feather='check-square' data-id='1'></span>
-                            {% else %}
-                            <span data-feather='x-square' data-id='2'></span>
-                            {% endif %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-approve='false' title="不通过">
+                            <span data-feather='x-square'></span>
                         </button>
+                        {% elif item.isApproved === false %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-approve='true' title="通过">
+                            <span data-feather='check-square'></span>
+                        </button>
+                        {% else %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-approve='false' title="不通过">
+                            <span data-feather='x-square'></span>
+                        </button>
+                        {% endif %}
                     </div>
                     <div class='cover cover-card j-cover'>
                         <span data-feather='check' class='manipulate-check'></span>
                         <span data-feather='check' class='manipulate-check j-check'></span>
                     </div>
-                    {% if item.isApproved === true %}
-                    <span data-feather='check-circle' class='approve-mark'></span>
-                    {% elif item.isApproved === false %}
-                    <span data-feather='x-circle' class='approve-mark'></span>
-                    {% else %}{% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -93,9 +81,6 @@
     <div class="btn-group mr-2">
         <button class="btn btn-sm btn-outline-secondary j-mani-btn">
             <span data-feather='check-square' data-id='1'></span>
-        </button>
-        <button class="btn btn-sm btn-outline-secondary j-mani-btn">
-            <span data-feather='layers' data-id='0'></span>
         </button>
         <button class="btn btn-sm btn-outline-secondary j-mani-btn">
             <span data-feather='x-square' data-id='2'></span>

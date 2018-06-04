@@ -1,4 +1,4 @@
-const model = require('../model/home.js');
+const axios = require('axios');
 const PAGE_SIZE = 10;
 
 module.exports = {
@@ -9,12 +9,12 @@ module.exports = {
         let style = 0;
         let index = ctx.request.query.index >> 0 || 1;
 
-        let data = await model.getUsers(ctx.state.token, index, PAGE_SIZE, status);
+        let res = await axios.get(`https://api.ikcamp.cn/admin/user/${status}?pageIndex=${index}&pageSize=${PAGE_SIZE}`, { headers: { 'x-session': ctx.state.token } });
 
         await ctx.render('home/users', {
-            list: data.data,
+            list: res.data.status !== 0 ? [] : res.data.data.data,
             path: ctx.path,
-            page: Math.ceil(data.count / PAGE_SIZE),
+            page: Math.ceil(res.data.data.count / PAGE_SIZE),
             index,
             status,
             style
@@ -22,13 +22,13 @@ module.exports = {
 
     },
     editUsers: async(ctx, next) => {
-        let body = ctx.request.body;
-        body.data.forEach(function(item, i){
-            let data = {
-                id: item,
-                type: body.type
-            }
-            model.editUsers(data);
-        });
+        // let body = ctx.request.body;
+        // body.data.forEach(function(item, i){
+        //     let data = {
+        //         id: item,
+        //         type: body.type
+        //     }
+        //     model.editUsers(data);
+        // });
     }
 }
