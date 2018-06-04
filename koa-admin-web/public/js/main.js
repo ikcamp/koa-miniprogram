@@ -99,18 +99,41 @@ let page = {
 
 $(document).ready(function () {
 
+    // 照片－“操作”
     $('.j-mani-btn button[type="button"]').on('click', function () {
-        let that = $(this);
-        let is_approved = that.attr('data-approve');
-        let id = that.closest('.j-row').attr('data-id');
 
+        let that = $(this);
+
+        let isApproved = that.attr('data-approve');
+        let id = that.closest('.j-row').attr('data-id');
 
         $.ajax(`/photos/${id}`, {
             type: 'put',
-            data: { approved: is_approved },
-            complete() {
-
+            data: { isApproved },
+            complete(res) {
+                if (res.status === 200 && res.responseJSON.status === 0) {
+                    location.reload()
+                }
             }
         })
-    })
+    });
+
+    // 用户－“操作”
+    $('.j-users-btn button[type="button"]').on('click', function () {
+
+        let that = $(this);
+
+        let userType = that.attr('data-type');
+        let id = that.closest('.j-row').attr('data-id');
+
+        $.ajax(`/users/${id}`, {
+            type: 'put',
+            data: { userType },
+            complete(res) {
+                if (res.status === 200 && res.responseJSON.status === 0) {
+                    location.reload()
+                }
+            }
+        })
+    });
 })

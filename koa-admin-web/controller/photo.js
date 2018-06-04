@@ -24,20 +24,10 @@ module.exports = {
     updatePhotos: async (ctx, next) => {
 
         let { id } = ctx.params;
+        let { isApproved } = ctx.request.body;
 
-        let res = await axios.put(`https://api.ikcamp.cn/admin/photo/${id}`, ctx.request.body, { headers: { 'x-session': ctx.state.token } });
+        let res = await axios.put(`https://api.ikcamp.cn/admin/photo/${id}`, { isApproved }, { headers: { 'x-session': ctx.state.token } });
 
-        debugger;
-        ctx.body = {
-            status: 0
-        }
-        // let body = ctx.request.body;
-        // body.data.forEach(function (item, i) {
-        //     let data = {
-        //         id: item,
-        //         type: body.type === 0 ? null : (body.type === 1 ? true : false)
-        //     }
-        //     model.editPhotos(data);
-        // });
+        ctx.body = res.data;
     }
 }

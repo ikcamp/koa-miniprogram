@@ -21,14 +21,12 @@ module.exports = {
         })
 
     },
-    editUsers: async(ctx, next) => {
-        // let body = ctx.request.body;
-        // body.data.forEach(function(item, i){
-        //     let data = {
-        //         id: item,
-        //         type: body.type
-        //     }
-        //     model.editUsers(data);
-        // });
+    updateUsers: async(ctx, next) => {
+        let { id } = ctx.params;
+        let { userType } = ctx.request.body;
+
+        let res = await axios.put(`https://api.ikcamp.cn/admin/user/${id}`, { userType }, { headers: { 'x-session': ctx.state.token } });
+
+        ctx.body = res.data;
     }
 }

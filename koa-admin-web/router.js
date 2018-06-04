@@ -22,7 +22,7 @@ module.exports = (app) => {
     router.get('/users/:status',userController.getUsers);
 
     // 操作用户权限
-    router.post('/users',userController.editUsers);
+    router.put('/users/:id',userController.updateUsers);
 
     // 退出登陆
     router.get('/logout',loginController.logout);

@@ -50,7 +50,7 @@
             {% endif %}
             <tbody>
                 {% for item in list %}
-                <tr data-id={{item.openId}}>
+                <tr class="j-row" data-id={{item._id}}>
                     <td class="change-status j-identity">
                         <input type="checkbox" class="j-option" aria-label="Checkbox for following text input">
                     </td>
@@ -68,21 +68,29 @@
                         </span>
                         {% endif %}
                     </td>
-                    <td class="manipulate-cell">
-                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny j-mani-btn">
-                            {% if item.userType === 1 %}
-                            <span data-feather='user' data-id='0'></span>
-                            {% else %}
-                            <span data-feather='anchor' data-id='1'></span>
-                            {% endif %}
+                    <td class="manipulate-cell j-users-btn">
+                        {% if item.userType === 1 %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-type='0' title="普通用户">
+                            <span data-feather='user'></span>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny j-mani-btn">
-                            {% if item.userType === 2 %}
-                            <span data-feather='user' data-id='0'></span>
-                            {% else %}
-                            <span data-feather='user-x' data-id='2'></span>
-                            {% endif %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-type='2' title="禁止用户">
+                            <span data-feather='user-x'></span>
                         </button>
+                        {% elif item.userType === 2 %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-type='0' title="普通用户">
+                            <span data-feather='user'></span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-type='1' title="管理员">
+                            <span data-feather='anchor'></span>
+                        </button>
+                        {% else %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-type='1' title="管理员">
+                            <span data-feather='anchor'></span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny" data-type='2' title="禁止用户">
+                            <span data-feather='user-x'></span>
+                        </button>
+                        {% endif %}
                         <div class="cover cover-table j-cover"></div>
                     </td>
                 </tr>
