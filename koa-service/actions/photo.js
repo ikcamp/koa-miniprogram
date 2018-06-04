@@ -47,6 +47,9 @@ module.exports = {
   async approve (id, state) {
     return photo.approve(id, state)
   },
+  async updatePhoto (id, data) {
+    return photo.update(id, data)
+  },
   async delete (id) {
     return photo.delete(id)
   },

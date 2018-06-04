@@ -231,11 +231,11 @@ router.get('/admin/photo/:type', auth, async (context, next) => {
 })
 
 /**
- * 审核照片,state为true/false
+ * 修改照片信息
  */
-router.put('/admin/photo/approve/:id/:state', auth, async (context, next) => {
+router.put('/admin/photo/:id/', auth, async (context, next) => {
   if (context.state.user.isAdmin) {
-    await photo.approve(context.params.id, context.params.state)
+    await photo.updatePhoto(context.params.id, context.body)
   } else {
     context.throw(403, '该用户无权限')
   }
@@ -260,10 +260,10 @@ router.get('/admin/user/:type', async (context, next) => {
 /**
  * 修改用户类型，userType=1 为管理员， -1 未禁用用户
  */
-router.get('/admin/user/:id/userType/:type', async (context, next) => {
+router.put('/admin/user/:id', async (context, next) => {
   const body = {
     status: 0,
-    data: await account.setUserType(context.params.id, context.params.type)
+    data: await account.update(context.params.id, context.request.body)
   }
   context.body = body
   await next()
