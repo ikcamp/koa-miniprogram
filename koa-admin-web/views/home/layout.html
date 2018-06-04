@@ -9,12 +9,24 @@
 {% endblock %}
 
 {% block body %}
+
+{% set MENU =  [{
+    title: '照片管理',
+    icon: 'image',
+    url: '/photos/all'
+}, {
+    title: '用户管理',
+    icon: 'users',
+    url: '/users/all'
+}]
+%}
+
     <div class="container-fluid">
         <div class="row">
               <nav class="col-md-2 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
                   <ul class="nav flex-column" id="sidebar_list">
-                      {% for item in menu %}
+                      {% for item in MENU %}
                       <li class="nav-item j-nav-item">
                             <a class="nav-link {{'active' if activeMenu === loop.index0 else ''}}" href='{{item.url}}'>
                                 <span data-feather={{item.icon}}></span>

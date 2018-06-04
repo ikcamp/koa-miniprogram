@@ -1,33 +1,25 @@
 const model = require('../model/home.js');
+const PAGE_SIZE = 10;
 
 module.exports = {
 
     getUsers: async(ctx, next) => {
-        let status;
-        let count = 10;
-        let active = ctx.params.page ? parseInt(ctx.params.page) : 1;
 
-        switch(ctx.url){
-            case '/users/admin':
-                status = 1
-                break;
-            case '/users/ordinary':
-                status = 0
-                break;
-            case '/users/blocked':
-                status = 2
-                break;
-            default:
-                break;
-        }
-        // 调专家接口拿数据
-        await ctx.render('home/users',{
-            menu:model.getMenu(),
-            activeMenu: 1,
-            users: model.getUsers(status),
-            page: 24/count,
-            active: active
+        let status = ctx.params.type || 'all';
+        let style = 0;
+        let index = ctx.request.query.index >> 0 || 1;
+
+        let data = await model.getUsers(ctx.state.token, index, PAGE_SIZE, status);
+
+        await ctx.render('home/users', {
+            photos: data.data,
+            path: ctx.path,
+            page: Math.ceil(data.count / PAGE_SIZE),
+            index,
+            status,
+            style
         })
+
     },
     editUsers: async(ctx, next) => {
         let body = ctx.request.body;

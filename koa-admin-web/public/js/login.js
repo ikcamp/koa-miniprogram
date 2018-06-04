@@ -29,7 +29,7 @@ function interval(qrcode){
             send('GET',null,`/check`,function(data){
                 let _data = JSON.parse(data);
                 if(_data.data.isAdmin){
-                    window.location.href = '/photos';
+                    window.location.href = '/photos/all';
                 } else {
                     addClass(page.warning,'login-warning');
                 }
