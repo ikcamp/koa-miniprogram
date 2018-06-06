@@ -1,14 +1,7 @@
 import SERVER from "../../server/index"
-import connect from "../../utils/connect"
-
-const mapStateToProps = (state) => {
-  return {
-    pics: state.pics
-  }
-}
-
-Page(connect(mapStateToProps)({
+Page({
   data: {
+    pics: [],
     hidden: true,
     fm: SERVER.FM
   },
@@ -31,9 +24,7 @@ Page(connect(mapStateToProps)({
     this.setData({ hidden: false })
   },
   onAddPics(e) {
-
     wx.showLoading({ title: '提交中...', mask: true })
-
     SERVER.addPics(e.detail.name).then(res => {
       if (res.data.status == 0) this.getPics()
     }).finally(() => {
@@ -49,4 +40,4 @@ Page(connect(mapStateToProps)({
     let { id, name } = evt.currentTarget.dataset
     wx.navigateTo({ url: `../pic/pic?id=${id}&name=${name}` })
   }
-}))
+})

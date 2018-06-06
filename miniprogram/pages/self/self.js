@@ -7,14 +7,6 @@ const mapStateToProps = (state) => {
   }
 }
 Page(connect(mapStateToProps)({
-  data: {},
-  onLoad() {
-
-    this.setData({
-      userInfo: getApp().Store.getState().userInfo
-    })
-
-  },
   getUserInfoHandle: function (e) {
 
     let userInfo = e.detail.userInfo;

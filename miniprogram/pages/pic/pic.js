@@ -1,8 +1,5 @@
 import SERVER from "../../server/index"
 import { formatTime } from "../../utils/formatTime"
-import Store from '../../reducers/index'
-
-const dispatch = Store.dispatch
 
 Page({
   data: {
@@ -27,11 +24,11 @@ Page({
     SERVER.getPic(this.data.id).then(res => {
       if (res.data.status == 0) {
 
-        const _data = res.data.data
+        const { count, data } = res.data.data
 
-        let pics = _data.length === 0 ? [] : this.reSort(_data)
+        let pics = count ?this.reSort(data):[]
 
-        this.setData({ pics, nums: _data.length })
+        this.setData({ pics, nums: count })
       }
     })
   },
@@ -80,23 +77,10 @@ Page({
         wx.showToast({ title: '照片上传成功，请到后台管理系统中审核。', icon: 'none', duration: 2000 })
 
         this.getPic()
-        this.updatePics()
       }).catch(e => {
         wx.hideLoading()
         console.log(e)
       })
-    })
-  },
-  updatePics() {
-
-    SERVER.getPics().then(res => {
-      const _data = res.data
-
-      if (_data.status == 0) {
-
-        dispatch({ type: "MODIFY_PICS", data: _data.data || [] })
-
-      }
     })
   },
   previewImage(e) {
