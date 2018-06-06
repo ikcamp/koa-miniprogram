@@ -13,16 +13,16 @@ module.exports = (app) => {
     router.get('/check',loginController.checkAuth);
     
     // 获取照片列表
-    router.get('/photos/:type',photoController.getPhotos);
+    router.get('/photos/:status',photoController.getPhotos);
 
     // 操作照片
-    router.post('/photos/:id',photoController.editPhotos);
+    router.put('/photos/:id',photoController.updatePhotos);
     
     // 获取用户列表
-    router.get('/users/:type',userController.getUsers);
+    router.get('/users/:status',userController.getUsers);
 
     // 操作用户权限
-    router.post('/users',userController.editUsers);
+    router.put('/users/:id',userController.updateUsers);
 
     // 退出登陆
     router.get('/logout',loginController.logout);
