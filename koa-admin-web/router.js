@@ -6,6 +6,7 @@ const userController = require('./controller/user');
 
 module.exports = (app) => {
     // 获取登陆页面
+    router.get('/',loginController.index);
     router.get('/login',loginController.index);
     router.get('/qrcode',loginController.getQrcode);
     router.get('/token',loginController.getToken);
