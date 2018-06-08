@@ -1,31 +1,37 @@
+const model = require('../model/home.js');
 const axios = require('axios');
-const PAGE_SIZE = 10;
 
 module.exports = {
 
     getUsers: async(ctx, next) => {
-
         let status = ctx.params.status || 'all';
-        let style = 0;
-        let index = ctx.request.query.index >> 0 || 1;
+        let count = 10;
+        let index = ctx.params.page ? parseInt(ctx.params.page) : 1;
 
-        let res = await axios.get(`https://api.ikcamp.cn/admin/user/${status}?pageIndex=${index}&pageSize=${PAGE_SIZE}`, { headers: { 'x-session': ctx.state.token } });
+        // 调专家接口拿数据
+        let res = await axios.get(
+            `https://api.ikcamp.cn/admin/user/${status}?pageIndex=${index}&pageSize=${count}`, { 
+                headers: { 
+                    'x-session': ctx.state.token 
+                } 
+            }
+        );
 
-        await ctx.render('home/users', {
-            list: res.data.status !== 0 ? [] : res.data.data.data,
-            path: ctx.path,
-            page: Math.ceil(res.data.data.count / PAGE_SIZE),
-            index,
-            status,
-            style
+        await ctx.render('home/users',{
+            menu:model.getMenu(),
+            activeMenu: 1,
+            users: res.data.data.data || [],
+            page: Math.ceil(res.data.data.count / count),
+            index: index,
+            status: status
         })
-
     },
-    updateUsers: async(ctx, next) => {
-        let { id } = ctx.params;
-        let { userType } = ctx.request.body;
+    editUsers: async(ctx, next) => {
 
-        let res = await axios.put(`https://api.ikcamp.cn/admin/user/${id}`, { userType }, { headers: { 'x-session': ctx.state.token } });
+        let _type = ctx.request.body.type.toString();
+        let res = await axios.put(`https://api.ikcamp.cn/admin/user/${ctx.params.id}`, { userType: _type}, { 
+            headers: { 'x-session': ctx.state.token } 
+        });
 
         ctx.body = res.data;
     }
