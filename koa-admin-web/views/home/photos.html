@@ -13,9 +13,9 @@
                              分列
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/photos/{{active}}?style=4">3</a>
-                        <a class="dropdown-item" href="/photos/{{active}}?style=3">4</a>
-                        <a class="dropdown-item" href="/photos/{{active}}?style=2">6</a>
+                        <a class="dropdown-item" href="/photos/{{status}}?index={{index}}&column=4">3</a>
+                        <a class="dropdown-item" href="/photos/{{status}}?index={{index}}&column=3">4</a>
+                        <a class="dropdown-item" href="/photos/{{status}}?index={{index}}&column=2">6</a>
                     </div>
                 </div>
                 <div class="input-group-prepend">
@@ -24,10 +24,10 @@
                             照片分类
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/photos">全部照片</a>
-                        <a class="dropdown-item" href="/photos/pending">未审核</a>
-                        <a class="dropdown-item" href="/photos/accepted">已通过</a>
-                        <a class="dropdown-item" href="/photos/rejected">未通过</a>
+                        <a class="dropdown-item" href="/photos/all?index={{index}}&column={{column}}">全部照片</a>
+                        <a class="dropdown-item" href="/photos/pending?index={{index}}&column={{column}}">未审核</a>
+                        <a class="dropdown-item" href="/photos/accepted?index={{index}}&column={{column}}">已通过</a>
+                        <a class="dropdown-item" href="/photos/rejected?index={{index}}&column={{column}}">未通过</a>
                     </div>
                 </div>
                 <div class="info">
@@ -44,8 +44,8 @@
         <div class="container">
             <div class="row">
                 {% for item in photos %}
-                <div class="col-md-{{style}} j-card">
-                    <div class="card mb-4 box-shadow" data-id={{item.openId}}>
+                <div class="col-md-{{column}} j-card">
+                    <div class="card mb-4 box-shadow" data-id={{item._id}}>
                         <img class="card-img-top {{'trans' if item.isApproved !== null else ''}}" src="{{item.url}}" data-holder-rendered="true">
                         <div class="card-body card-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny j-mani-btn">
@@ -77,6 +77,7 @@
                 {% endfor %}
             </div>
         </div>
+        {% if page > 1 %}
         <ul class="pagination pagination-sm justify-content-end">
             <li class="page-item"><a class="page-link" href="/photos/{{active - 1 if active > 1 else 1}}"><span data-feather='chevrons-left'></span></a></li>
             {% for i in range(1, page + 1) %}
@@ -84,6 +85,7 @@
             {% endfor %}
             <li class="page-item"><a class="page-link" href="/photos/{{page if active === page else active + 1}}"><span data-feather='chevrons-right'></span></a></li>
         </ul>
+        {% endif %}
     </main>
     <div class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 approve-btn" id="j_approve_group">
             <div class="btn-group mr-2">

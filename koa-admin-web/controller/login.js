@@ -1,5 +1,6 @@
 const model = require('../model/home.js');
 const axios = require('axios');
+const util = require('../util/util.js');
 
 module.exports = {
     index: async(ctx, next) => {
@@ -13,25 +14,18 @@ module.exports = {
         const res = await axios.get(`https://api.ikcamp.cn/login/errcode/check/${ctx.query.code}`);
         ctx.response.body = res.data;
         if(res.data.data){
-            ctx.cookies.set('token',res.data.data.sessionKey);
+            util.setToken(ctx, res.data.data.sessionKey);
         }
     },
     checkAuth: async(ctx, next) => {
-        let _token = ctx.cookies.get('token');
-        const res = await axios.get('https://api.ikcamp.cn/my',{
-            headers:{
-                'x-session': _token
+        let res = await axios.get('https://api.ikcamp.cn/my', {
+            headers: {
+                'x-session': util.getToken(ctx)
             }
         });
         ctx.response.body = res.data;
-        if(res.data.data){
-            ctx.cookies.set('isAdmin',res.data.data.isAdmin);
-        }
     },
     logout: async(ctx, next) => {
-        ctx.cookies.set('token','');
-        ctx.cookies.set('isAdmin','');
-        ctx.status = 302;
-        ctx.redirect('/login');
+        util.redirectToLogin(ctx);
     }
 }

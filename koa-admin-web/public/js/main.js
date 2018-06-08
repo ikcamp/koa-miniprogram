@@ -58,27 +58,28 @@ window.onload = function () {
     [].forEach.call(page.maniBtn, function(item, index){
         item.addEventListener('click', function(){
             let type = parseInt(this.children[0].dataset.id);
-            let data = [];
             if(hasClass(page.selectBtn, 'active')){
                 let _check = document.getElementsByClassName('check-green');
                 let _input = [].filter.call(page.checkboxInput, function(item){
                     return item.checked;
                 });
                 let checked = _check.length > 0 ? _check : _input;
+                
                 [].forEach.call(checked, function(item, i){
-                    data.push(parseInt(item.parentNode.parentNode.dataset.id));
+                    let _data = item.parentNode.parentNode.dataset.id;
+                    send('PUT', {type: type}, '/' + window.location.pathname.split('/')[1] + '/' + _data, function(){
+                        window.location.reload()
+                    });
                 });
             } else {
-                data.push(parseInt(item.parentNode.parentNode.dataset.id));
+                let _data = item.parentNode.parentNode.dataset.id;
+                send('PUT', {type: type}, '/' + window.location.pathname.split('/')[1] + '/' + _data, window.location.reload());
             }
-            console.log(data, type)
-            send('POST', {data: data, type: type}, '/' + window.location.pathname.split('/')[1]);
-            window.location.reload();
         })
     })
 
     // 全选/取消
-    page.selectAll.addEventListener('click',function(){
+    page.selectAll && page.selectAll.addEventListener('click',function(){
         if(!hasClass(this, 'active')){
             addClass(this, 'active');
             [].forEach.call(page.checks, function(item, i){

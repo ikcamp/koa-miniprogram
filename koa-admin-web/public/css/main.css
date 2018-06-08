@@ -246,6 +246,7 @@ body {
      text-align: center;
      font-size: .875rem;
      line-height: 2.5rem;
+     min-width: 790px;
    }
    .manipulate-cell {
      position:relative;
