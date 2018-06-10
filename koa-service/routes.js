@@ -161,7 +161,7 @@ router.post('/album', auth, async (context, next) => {
  * 修改相册
  */
 router.put('/album/:id', auth, async (context, next) => {
-  await photo.updateAlbum(context.params.id, context.body.name)
+  await photo.updateAlbum(context.params.id, context.body.name, ctx.state.user)
   await next()
 }, responseOK)
 /**
@@ -217,15 +217,11 @@ router.delete('/photo/:id', auth, async (context, next) => {
  * reject：审核未通过列表
  */
 router.get('/admin/photo/:type', auth, async (context, next) => {
-  if (context.state.user.isAdmin) {
-    const pageParams = getPageParams(context)
-    const photos = await photo.getPhotosByApproveState(context.params.type, pageParams.pageIndex, pageParams.pageSize)
-    context.body = {
-      status: 0,
-      data: photos
-    }
-  } else {
-    context.throw(403, '该用户无权限')
+  const pageParams = getPageParams(context)
+  const photos = await photo.getPhotosByApproveState(context.params.type, pageParams.pageIndex, pageParams.pageSize)
+  context.body = {
+    status: 0,
+    data: photos
   }
 })
 

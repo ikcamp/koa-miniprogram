@@ -20,5 +20,9 @@ module.exports = async function (context, next) {
   } else {
     context.throw(401, 'session 过期')
   }
+
+  if (/^\/admin/i.test(context.url) && !context.state.user.isAdmin) {
+    context.throw(401, '当前资源必须管理员才能访问')
+  }
   await next()
 }

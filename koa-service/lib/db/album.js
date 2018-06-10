@@ -21,6 +21,9 @@ module.exports = {
       name: name
     })
   },
+  async findById(id){
+    return Album.findById(id)
+  },
   async getAlbums (userId, pageIndex, pageSize) {
     let result
     if (pageSize) {
