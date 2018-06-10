@@ -7,8 +7,10 @@ const JSON_MIME = 'application/json'
 const {open} = require('./lib/db/connect')
 const router = require('./routes')
 const cors = require('@koa/cors')
+const logger = require('./middlewares/log')
 open()
 
+app.use(logger)
 app.use(cors({
   origin: '*'
 }))
