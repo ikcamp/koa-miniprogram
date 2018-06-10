@@ -214,38 +214,24 @@ router.delete('/photo/:id', auth, async (context, next) => {
  * 按照状态获取相片列表，type类型如下：
  * pending：待审核列表
  * accepted：审核通过列表
- * reject：审核未通过列表
+ * rejected：审核未通过列表
+ * all: 获取所有列表
  */
 router.get('/admin/photo/:type', auth, async (context, next) => {
-  const pageParams = getPageParams(context)
-  const photos = await photo.getPhotosByApproveState(context.params.type, pageParams.pageIndex, pageParams.pageSize)
-  context.body = {
-    status: 0,
-    data: photos
-  }
-})
-
-/**
- * 获取所有照片列表
- */
-router.get('/admin/photo', auth, async (context, next) => {
-  if (context.state.user.isAdmin) {
     const pageParams = getPageParams(context)
+    const photos = await photo.getPhotosByType(context.params.type, pageParams.pageIndex, pageParams.pageSize)
     context.body = {
       status: 0,
-      data: await photo.getAll(pageParams.pageIndex, pageParams.pageSize)
+      data: photos
     }
-  } else {
-    context.throw(403, '该用户无权限')
-  }
 })
 
 /**
- * 审核照片,state为true/false
+ * 修改照片信息
  */
-router.put('/admin/photo/approve/:id/:state', auth, async (context, next) => {
+router.put('/admin/photo/:id/', auth, async (context, next) => {
   if (context.state.user.isAdmin) {
-    await photo.approve(context.params.id, this.params.state)
+    await photo.updatePhoto(context.params.id, context.request.body)
   } else {
     context.throw(403, '该用户无权限')
   }
@@ -253,22 +239,27 @@ router.put('/admin/photo/approve/:id/:state', auth, async (context, next) => {
 }, responseOK)
 /**
  * 获取用户列表
+ * type的值的类型为：
+ * admin: 管理员
+ * blocked: 禁用用户
+ * ordinary: 普通用户
+ * all: 全部用户
  */
-router.get('/admin/user', async (context, next) => {
+router.get('/admin/user/:type', async (context, next) => {
   const pageParams = getPageParams(context)
   context.body = {
     status: 0,
-    data: await account.getUsers(pageParams.pageIndex, pageParams.pageSize)
+    data: await account.getUsersByType(context.params.type, pageParams.pageIndex, pageParams.pageSize)
   }
   await next()
 })
 /**
  * 修改用户类型，userType=1 为管理员， -1 未禁用用户
  */
-router.get('/admin/user/:id/userType/:type', async (context, next) => {
+router.put('/admin/user/:id', async (context, next) => {
   const body = {
     status: 0,
-    data: await account.setUserType(context.params.id, context.params.type)
+    data: await account.update(context.params.id, context.request.body)
   }
   context.body = body
   await next()

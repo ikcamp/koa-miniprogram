@@ -11,6 +11,11 @@ module.exports = {
     })
     return _photo
   },
+  async update (id, photo) {
+    return Phopto.update({
+      _id: id
+    }, photo)
+  },
   async approve (id, state) {
     return Phopto.update({
       _id: id
@@ -100,7 +105,7 @@ module.exports = {
     }).skip((pageIndex - 1) * pageSize).limit(pageSize)
   },
   async getAllCount () {
-    return Phopto.find({
+    return Phopto.count({
       isDelete: false
     })
   },
