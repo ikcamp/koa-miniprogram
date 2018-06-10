@@ -34,16 +34,12 @@ if (env !== 'production') {
 
 module.exports = async function (ctx, next) {
   ctx.logger = logger
-  try {
-    ctx.logger.info(JSON.stringify({
-      url: ctx.url,
-      query: ctx.query,
-      headers: ctx.request.headers,
-      ua: ctx.userAgent,
-      timespan: Date.now()
-    }))
-    await next()
-  } catch (error) {
-    ctx.logger.error(error.stack || error)
-  }
+  ctx.logger.info(JSON.stringify({
+    url: ctx.url,
+    query: ctx.query,
+    headers: ctx.request.headers,
+    ua: ctx.userAgent,
+    timespan: Date.now()
+  }))
+  await next()
 }
