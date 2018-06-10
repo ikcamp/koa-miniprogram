@@ -1,5 +1,4 @@
-// const HOST = 'https://api.ikcamp.cn'
-const HOST = 'http://localhost:4001'
+const HOST = 'https://api.ikcamp.cn'
 const SESSION_KEY = 'sessionKey'
 const SERVER_API = {
   ALBUM: '/album',
