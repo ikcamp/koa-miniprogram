@@ -24,7 +24,7 @@ module.exports = {
             photos: res.data.data.data || [],
             page: Math.ceil(res.data.data.count/count),
             column: column,
-            index: index,
+            index: parseInt(index),
             status: status
         })
     },

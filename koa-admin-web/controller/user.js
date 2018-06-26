@@ -6,14 +6,14 @@ module.exports = {
     getUsers: async(ctx, next) => {
         let status = ctx.params.status || 'all';
         let count = 10;
-        let index = ctx.params.page ? parseInt(ctx.params.page) : 1;
+        let index = ctx.request.querystring? ctx.request.query.index : 1;
 
         // 调专家接口拿数据
         let res = await axios.get(
             `https://api.ikcamp.cn/admin/user/${status}?pageIndex=${index}&pageSize=${count}`, { 
-                headers: { 
+                headers: {
                     'x-session': ctx.state.token 
-                } 
+                }
             }
         );
 
@@ -22,7 +22,7 @@ module.exports = {
             activeMenu: 1,
             users: res.data.data.data || [],
             page: Math.ceil(res.data.data.count / count),
-            index: index,
+            index: parseInt(index),
             status: status
         })
     },

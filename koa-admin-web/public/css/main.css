@@ -168,6 +168,9 @@ body {
   .trans{
     opacity: .5;
   }
+  .admin-img {
+    width: calc();
+  }
   .cover {
     display: none;
     opacity: .5;

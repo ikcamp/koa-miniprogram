@@ -1,3 +1,4 @@
+{% import '../common/pagination.html' as pagination %}
 {% extends './layout.html' %} 
 {% block body %}
 {{ super() }}
@@ -65,7 +66,7 @@
                             {% endif %}                      
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary btn-tiny j-mani-btn">                           
-                            {% if item.userType === -1d %}
+                            {% if item.userType === -1 %}
                             <span data-feather='user' data-id='0'></span>
                             {% else %}
                             <span data-feather='user-x' data-id='-1'></span>
@@ -79,13 +80,7 @@
               </table>
         </div>
         {% if page > 1 %}
-        <ul class="pagination pagination-sm justify-content-end">
-            <li class="page-item"><a class="page-link" href="/users/{{active - 1 if active > 1 else 1}}"><span data-feather='chevrons-left'></span></a></li>
-            {% for i in range(1, page + 1) %}
-            <li class="page-item {{'active' if loop.index === active}}"><a class="page-link" href="/users/{{i}}">{{i}}</a></li>
-            {% endfor %}
-            <li class="page-item"><a class="page-link" href="/users/{{page if active === page else active + 1}}"><span data-feather='chevrons-right'></span></a></li>
-        </ul> 
+            {{ pagination.pagination('users', page, status,index,column) }}
         {% endif %}
     </main>
     <div class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 approve-btn" id="j_approve_group">

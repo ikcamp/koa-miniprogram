@@ -42,7 +42,7 @@ function interval(qrcode){
 
 window.onload = function(){
     let qrcode;
-
+    
     // 初始化页面
     addClass(page.codeContainer, 'code-container-display');
     addClass(page.qrcode, 'qrcode-display')
