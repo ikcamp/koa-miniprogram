@@ -25,6 +25,7 @@ async function responseOK (ctx, next) {
  */
 router.get('/login', async (context, next) => {
   const code = context.query.code
+  ctx.logger.info(`[login] 用户登陆Code为${code}`)
   context.body = {
     status: 0,
     data: await account.login(code)
@@ -34,6 +35,7 @@ router.get('/login', async (context, next) => {
  * 修改用户信息
  */
 router.put('/user', auth, async (context, next) => {
+  ctx.logger.info(`[user] 修改用户信息, 用户ID为${context.stale.user.id}, 修改的内容为${JSON.stringify(context.request.body)}`)
   await account.update(context.state.user.id, context.request.body)
   await next()
 }, responseOK)
@@ -42,13 +44,9 @@ router.put('/user', auth, async (context, next) => {
  * 获取当前登陆的用户信息
  */
 router.get('/my', auth, async (context, next) => {
-  if (context.state.user.id) {
-    context.body = {
-      status: 0,
-      data: context.state.user
-    }
-  } else {
-    context.throw(401, '当前用户未登录')
+  context.body = {
+    status: 0,
+    data: context.state.user
   }
 })
 
@@ -56,6 +54,7 @@ router.get('/my', auth, async (context, next) => {
  * 扫码登陆，获取二维码字符串
  */
 router.get('/login/ercode', async (context, next) => {
+  context.logger.debug(`[login] 生成登陆二维码`)
   context.body = {
     status: 0,
     data: await account.getErCode()
@@ -161,7 +160,7 @@ router.post('/album', auth, async (context, next) => {
  * 修改相册
  */
 router.put('/album/:id', auth, async (context, next) => {
-  await photo.updateAlbum(context.params.id, context.body.name)
+  await photo.updateAlbum(context.params.id, context.body.name, ctx.state.user)
   await next()
 }, responseOK)
 /**
@@ -218,16 +217,12 @@ router.delete('/photo/:id', auth, async (context, next) => {
  * all: 获取所有列表
  */
 router.get('/admin/photo/:type', auth, async (context, next) => {
-  if (context.state.user.isAdmin) {
     const pageParams = getPageParams(context)
     const photos = await photo.getPhotosByType(context.params.type, pageParams.pageIndex, pageParams.pageSize)
     context.body = {
       status: 0,
       data: photos
     }
-  } else {
-    context.throw(403, '该用户无权限')
-  }
 })
 
 /**

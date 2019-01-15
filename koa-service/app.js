@@ -7,8 +7,10 @@ const JSON_MIME = 'application/json'
 const {open} = require('./lib/db/connect')
 const router = require('./routes')
 const cors = require('@koa/cors')
+const logger = require('./middlewares/log')
 open()
 
+app.use(logger)
 app.use(cors({
   origin: '*'
 }))
@@ -28,9 +30,10 @@ app.use(async (context, next) => {
   try {
     await next()
   } catch (ex) {
+    ctx.logger.error(ex.stack || ex)
     context.body = {
       status: -1,
-      message: ex.message,
+      message: ex.message || ex,
       code: ex.status
     }
   }
