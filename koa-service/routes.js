@@ -25,7 +25,7 @@ async function responseOK (ctx, next) {
  */
 router.get('/login', async (context, next) => {
   const code = context.query.code
-  ctx.logger.info(`[login] 用户登陆Code为${code}`)
+  context.logger.info(`[login] 用户登陆Code为${code}`)
   context.body = {
     status: 0,
     data: await account.login(code)
@@ -35,7 +35,7 @@ router.get('/login', async (context, next) => {
  * 修改用户信息
  */
 router.put('/user', auth, async (context, next) => {
-  ctx.logger.info(`[user] 修改用户信息, 用户ID为${context.stale.user.id}, 修改的内容为${JSON.stringify(context.request.body)}`)
+  context.logger.info(`[user] 修改用户信息, 用户ID为${context.stale.user.id}, 修改的内容为${JSON.stringify(context.request.body)}`)
   await account.update(context.state.user.id, context.request.body)
   await next()
 }, responseOK)

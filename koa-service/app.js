@@ -30,7 +30,7 @@ app.use(async (context, next) => {
   try {
     await next()
   } catch (ex) {
-    ctx.logger.error(ex.stack || ex)
+    context.logger.error(ex.stack || ex)
     context.body = {
       status: -1,
       message: ex.message || ex,
